@@ -14,7 +14,7 @@ export function StatCard({
   hint?: string;
 }) {
   return (
-    <div className="panel panel-hover p-5">
+    <div className="panel p-5">
       <div className="flex items-center justify-between">
         <p className="text-xs font-medium uppercase tracking-wider text-ink-muted">
           {label}

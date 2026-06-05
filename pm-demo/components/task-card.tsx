@@ -18,7 +18,7 @@ export function TaskCard({ task }: { task: Task }) {
   const overdue = task.status !== "done" && isOverdue(task.dueDate);
 
   return (
-    <article className="group rounded-lg border border-white/10 bg-[#0e0524]/70 p-3 backdrop-blur-sm transition-all hover:border-neon-cyan/50 hover:shadow-[0_0_22px_-6px_rgba(34,230,255,0.6)]">
+    <article className="rounded-lg border border-white/10 bg-[#0e0524]/70 p-3 backdrop-blur-sm">
       <div className="flex items-start justify-between gap-2">
         <h4 className="min-w-0 break-words text-sm font-medium leading-snug text-ink">
           {task.title}
