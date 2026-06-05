@@ -1,67 +1,80 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Holographic command-center HUD — deep space base, electric cyan/blue with
-   a violet-magenta holographic shimmer, animated outrun grid.
+   Deep-space console — navy void, warm amber/gold UI accent, teal data
+   accents, nebula wash + starfield. (Space-game inspired, not exact palettes.)
    --------------------------------------------------------------------------- */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-orbitron);
 
-  --color-bg: #04070d;
-  --color-panel: #0c1421;
-  --color-ink: #e8f1ff;
-  --color-ink-muted: #8395b3;
+  --color-bg: #070a14;
+  --color-panel: #111a2b;
+  --color-ink: #eef2fa;
+  --color-ink-muted: #93a2c0;
 
-  --color-neon-pink: #ff5a3c;     /* ember */
-  --color-neon-magenta: #b14aff;  /* holographic violet-magenta */
-  --color-neon-cyan: #2ee6ff;
-  --color-neon-purple: #5b7cff;   /* electric steel-blue */
-  --color-neon-blue: #2f6bff;
-  --color-neon-orange: #ff8a2b;
-  --color-neon-yellow: #ffc233;   /* amber */
-  --color-neon-green: #2bff9b;
-  --color-neon-red: #ff3b30;
+  --color-neon-pink: #ff7a45;     /* warm ember */
+  --color-neon-magenta: #8a6bff;  /* faint nebula violet (accent option only) */
+  --color-neon-cyan: #2fe0db;     /* teal — secondary data accent */
+  --color-neon-purple: #6b78ff;   /* steel periwinkle — structure */
+  --color-neon-blue: #4f86ff;
+  --color-neon-orange: #ff9a3c;
+  --color-neon-yellow: #ffc24d;   /* gold */
+  --color-neon-green: #34ed9a;
+  --color-neon-red: #ff5a4a;
 }
 
 /* ---------------------------------------------------------------------------
-   Base: deep-space backdrop + animated perspective grid + CRT scanlines
+   Base: deep-space backdrop = nebula washes + layered starfield over a void,
+   with a faint teal/amber horizon grid and CRT scanlines.
    --------------------------------------------------------------------------- */
 body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   color: var(--color-ink);
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(120% 80% at 50% -10%, rgba(47, 107, 255, 0.26), transparent 60%),
-    radial-gradient(120% 55% at 50% 114%, rgba(46, 230, 255, 0.14), transparent 58%),
-    linear-gradient(180deg, #060b14 0%, #0a1120 45%, #04070d 100%);
+    /* starfield (tiled points, varied size + tint for depth) */
+    radial-gradient(1.2px 1.2px at 15% 22%, rgba(255, 255, 255, 0.9), transparent 60%),
+    radial-gradient(1px 1px at 62% 48%, rgba(198, 226, 255, 0.75), transparent 60%),
+    radial-gradient(1.4px 1.4px at 38% 78%, rgba(214, 236, 255, 0.85), transparent 60%),
+    radial-gradient(1px 1px at 85% 16%, rgba(255, 255, 255, 0.6), transparent 60%),
+    radial-gradient(1px 1px at 8% 64%, rgba(210, 235, 255, 0.6), transparent 60%),
+    /* nebula washes (all cool: blue + teal) */
+    radial-gradient(60% 50% at 16% 10%, rgba(79, 134, 255, 0.20), transparent 70%),
+    radial-gradient(55% 45% at 86% 6%, rgba(47, 224, 219, 0.16), transparent 70%),
+    radial-gradient(75% 55% at 50% 116%, rgba(47, 224, 219, 0.14), transparent 65%),
+    /* void base */
+    linear-gradient(180deg, #080c18 0%, #0a1020 45%, #05070f 100%);
+  background-size:
+    170px 170px, 230px 230px, 290px 290px, 200px 200px, 260px 260px,
+    100% 100%, 100% 100%, 100% 100%, 100% 100%;
   background-attachment: fixed;
 }
 
-/* Perspective grid "floor" that scrolls toward the viewer. */
+/* Faint perspective horizon grid that drifts toward the viewer. */
 body::before {
   content: "";
   position: fixed;
   left: -50%;
   right: -50%;
   bottom: 0;
-  height: 65vh;
+  height: 55vh;
   z-index: -2;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(46, 230, 255, 0.45) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(47, 107, 255, 0.36) 1px, transparent 1px);
-  background-size: 46px 46px;
-  transform: perspective(340px) rotateX(62deg);
+    linear-gradient(rgba(47, 224, 219, 0.26) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79, 134, 255, 0.18) 1px, transparent 1px);
+  background-size: 48px 48px;
+  transform: perspective(340px) rotateX(64deg);
   transform-origin: bottom center;
-  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 78%);
-  mask-image: linear-gradient(to top, #000 0%, transparent 78%);
-  animation: grid-pull 7s linear infinite;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 80%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 80%);
+  animation: grid-pull 11s linear infinite;
 }
 @keyframes grid-pull {
   to {
-    background-position: 0 46px, 0 46px;
+    background-position: 0 48px, 0 48px;
   }
 }
 
@@ -77,10 +90,10 @@ body::after {
       to bottom,
       transparent 0,
       transparent 2px,
-      rgba(0, 0, 0, 0.18) 3px,
+      rgba(0, 0, 0, 0.16) 3px,
       transparent 4px
     ),
-    radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
+    radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -91,12 +104,12 @@ body::after {
 
 ::selection {
   background: var(--color-neon-cyan);
-  color: #04070d;
+  color: #05070f;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-neon-blue) transparent;
+  scrollbar-color: var(--color-neon-cyan) transparent;
 }
 *::-webkit-scrollbar {
   width: 9px;
@@ -111,36 +124,37 @@ body::after {
    Reusable components
    --------------------------------------------------------------------------- */
 @layer components {
-  /* Glass panel with electric edge, outer glow, and two-tone HUD corner brackets. */
+  /* Deep-space glass panel — cool steel edge + soft depth glow. */
   .panel {
     position: relative;
     border-radius: 0.7rem;
-    border: 1px solid rgba(91, 124, 255, 0.32);
-    background: linear-gradient(180deg, rgba(18, 28, 48, 0.78), rgba(8, 14, 26, 0.82));
+    border: 1px solid rgba(107, 120, 255, 0.3);
+    background: linear-gradient(180deg, rgba(20, 30, 50, 0.78), rgba(9, 14, 28, 0.82));
     backdrop-filter: blur(8px);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.07),
-      0 0 0 1px rgba(47, 107, 255, 0.05),
-      0 18px 48px -22px rgba(18, 40, 90, 0.95);
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 0 0 1px rgba(79, 134, 255, 0.05),
+      0 18px 48px -22px rgba(10, 28, 70, 0.95);
   }
+
   .panel-hover {
     transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   }
   .panel-hover:hover {
     transform: translateY(-3px);
-    border-color: rgba(46, 230, 255, 0.55);
+    border-color: rgba(47, 224, 219, 0.5);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.09),
-      0 0 28px -4px rgba(46, 230, 255, 0.5),
-      0 22px 56px -22px rgba(47, 107, 255, 0.55);
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 28px -4px rgba(47, 224, 219, 0.4),
+      0 22px 56px -22px rgba(79, 134, 255, 0.35);
   }
 
   /* Form fields. */
   .field {
     width: 100%;
     border-radius: 0.5rem;
-    border: 1px solid rgba(91, 124, 255, 0.4);
-    background: rgba(6, 12, 24, 0.75);
+    border: 1px solid rgba(107, 120, 255, 0.38);
+    background: rgba(7, 12, 24, 0.78);
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     color: var(--color-ink);
@@ -148,22 +162,22 @@ body::after {
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .field::placeholder {
-    color: rgba(131, 149, 179, 0.6);
+    color: rgba(147, 162, 192, 0.6);
   }
   .field:focus {
     border-color: var(--color-neon-cyan);
-    box-shadow: 0 0 0 3px rgba(46, 230, 255, 0.18), 0 0 18px -4px rgba(46, 230, 255, 0.55);
+    box-shadow: 0 0 0 3px rgba(47, 224, 219, 0.18), 0 0 18px -4px rgba(47, 224, 219, 0.55);
   }
   .field::-webkit-calendar-picker-indicator {
     filter: invert(0.85);
     cursor: pointer;
   }
   .field option {
-    background: #0c1421;
+    background: #111a2b;
     color: var(--color-ink);
   }
 
-  /* Primary gunmetal HUD button — electric-cyan edge, light-sheen sweep on hover. */
+  /* Primary console button — cool gunmetal body, warm amber edge + sheen sweep. */
   .btn-neon {
     position: relative;
     overflow: hidden;
@@ -176,13 +190,13 @@ body::after {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #cdeeff;
-    background: linear-gradient(180deg, #1b2942 0%, #0b1322 100%);
-    border: 1px solid rgba(46, 230, 255, 0.5);
+    color: #d4f6ff;
+    background: linear-gradient(180deg, #15243a 0%, #0a1322 100%);
+    border: 1px solid rgba(47, 224, 219, 0.55);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      0 0 18px -7px rgba(46, 230, 255, 0.85);
-    text-shadow: 0 0 8px rgba(46, 230, 255, 0.5);
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 18px -7px rgba(47, 224, 219, 0.85);
+    text-shadow: 0 0 8px rgba(47, 224, 219, 0.5);
     transition: box-shadow 0.18s ease, transform 0.1s ease, color 0.15s ease, border-color 0.15s ease;
   }
   .btn-neon::before {
@@ -192,17 +206,17 @@ body::after {
     bottom: 0;
     left: -60%;
     width: 45%;
-    background: linear-gradient(100deg, transparent, rgba(120, 220, 255, 0.35), transparent);
+    background: linear-gradient(100deg, transparent, rgba(160, 240, 255, 0.4), transparent);
     transform: skewX(-18deg);
     transition: left 0.55s ease;
     pointer-events: none;
   }
   .btn-neon:hover {
-    color: #eafcff;
+    color: #ecffff;
     border-color: var(--color-neon-cyan);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.16),
-      0 0 26px -3px rgba(46, 230, 255, 1);
+      inset 0 1px 0 rgba(255, 255, 255, 0.14),
+      0 0 26px -3px rgba(47, 224, 219, 1);
   }
   .btn-neon:hover::before {
     left: 130%;
@@ -220,9 +234,9 @@ body::after {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    border-radius: 0.45rem;
-    border: 1px solid rgba(91, 124, 255, 0.45);
-    background: rgba(47, 107, 255, 0.08);
+    border-radius: 0.4rem;
+    border: 1px solid rgba(107, 120, 255, 0.45);
+    background: rgba(79, 134, 255, 0.08);
     padding: 0.4rem 0.8rem;
     font-size: 0.8125rem;
     font-weight: 600;
@@ -234,8 +248,8 @@ body::after {
   .btn-ghost:hover {
     color: var(--color-neon-cyan);
     border-color: var(--color-neon-cyan);
-    background: rgba(46, 230, 255, 0.1);
-    box-shadow: 0 0 18px -6px rgba(46, 230, 255, 0.7);
+    background: rgba(47, 224, 219, 0.1);
+    box-shadow: 0 0 18px -6px rgba(47, 224, 219, 0.7);
   }
 }
 
@@ -243,14 +257,14 @@ body::after {
    Utilities
    --------------------------------------------------------------------------- */
 @layer utilities {
-  /* Holographic gradient text (cyan -> blue -> violet) with a soft glow. */
+  /* Stellar gradient text — cool ice: aqua -> teal -> electric blue. */
   .holo-text {
-    background-image: linear-gradient(96deg, #6df3ff 0%, #36b6ff 55%, #2f6bff 100%);
+    background-image: linear-gradient(96deg, #9bf6ff 0%, #2fe0db 46%, #5b8cff 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    filter: drop-shadow(0 0 10px rgba(46, 230, 255, 0.3));
+    filter: drop-shadow(0 0 10px rgba(47, 224, 219, 0.32));
   }
   .text-glow {
     text-shadow: 0 0 8px currentColor, 0 0 22px color-mix(in srgb, currentColor 55%, transparent);
@@ -259,9 +273,12 @@ body::after {
     text-shadow: 0 0 6px color-mix(in srgb, currentColor 70%, transparent);
   }
   .glow-cyan {
-    box-shadow: 0 0 22px -4px rgba(46, 230, 255, 0.7);
+    box-shadow: 0 0 22px -4px rgba(47, 224, 219, 0.7);
+  }
+  .glow-amber {
+    box-shadow: 0 0 22px -4px rgba(255, 181, 60, 0.7);
   }
   .glow-green {
-    box-shadow: 0 0 22px -4px rgba(43, 255, 155, 0.7);
+    box-shadow: 0 0 22px -4px rgba(52, 237, 154, 0.7);
   }
 }
