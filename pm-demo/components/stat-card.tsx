@@ -4,7 +4,7 @@ export function StatCard({
   label,
   value,
   icon,
-  accent = "text-slate-500",
+  accent = "text-neon-cyan",
   hint,
 }: {
   label: string;
@@ -14,15 +14,17 @@ export function StatCard({
   hint?: string;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="panel panel-hover p-5">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-slate-500">{label}</p>
-        <span className={accent}>{icon}</span>
+        <p className="text-xs font-medium uppercase tracking-wider text-ink-muted">
+          {label}
+        </p>
+        <span className={`${accent} text-glow`}>{icon}</span>
       </div>
-      <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
+      <p className="mt-2 font-display text-3xl font-bold tracking-tight text-ink">
         {value}
       </p>
-      {hint && <p className="mt-1 text-xs text-slate-400">{hint}</p>}
+      {hint && <p className="mt-1 text-xs text-ink-muted">{hint}</p>}
     </div>
   );
 }

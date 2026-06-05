@@ -44,24 +44,24 @@ export default async function ProjectDetailPage({ params }: Props) {
       <div>
         <Link
           href="/projects"
-          className="text-sm font-medium text-slate-500 hover:text-slate-700"
+          className="text-sm font-medium text-neon-cyan/80 transition hover:text-neon-cyan hover:text-glow-sm"
         >
           ← Projects
         </Link>
       </div>
 
-      <header className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <header className="panel p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="flex min-w-0 items-start gap-4">
             <span
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-base font-bold ${color.bg} ${color.text}`}
+              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-base font-bold ring-1 ring-inset ring-white/10 text-glow-sm ${color.bg} ${color.text}`}
               aria-hidden
             >
               {project.name.slice(0, 2).toUpperCase()}
             </span>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="break-words text-2xl font-semibold tracking-tight text-slate-900">
+                <h1 className="break-words font-display text-2xl font-bold tracking-wide text-ink text-glow-sm">
                   {project.name}
                 </h1>
                 <Badge className={`shrink-0 ${PROJECT_STATUS_META[project.status].badge}`}>
@@ -69,7 +69,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 </Badge>
               </div>
               {project.description && (
-                <p className="mt-1 max-w-2xl text-sm text-slate-500">
+                <p className="mt-1 max-w-2xl text-sm text-ink-muted">
                   {project.description}
                 </p>
               )}
@@ -79,7 +79,7 @@ export default async function ProjectDetailPage({ params }: Props) {
           <form action={deleteProject.bind(null, project.id)}>
             <ConfirmButton
               confirmMessage={`Delete project "${project.name}" and all its tasks?`}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-neon-red/40 bg-neon-red/5 px-3 py-1.5 text-sm font-medium text-neon-red/80 transition hover:bg-neon-red/15 hover:text-neon-red hover:shadow-[0_0_18px_-6px_rgba(255,77,109,0.9)] disabled:opacity-60"
             >
               <TrashIcon width={16} height={16} />
               Delete
@@ -89,17 +89,17 @@ export default async function ProjectDetailPage({ params }: Props) {
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <div>
-            <div className="mb-1.5 flex items-center justify-between text-xs text-slate-500">
-              <span className="font-medium text-slate-600">Progress</span>
+            <div className="mb-1.5 flex items-center justify-between text-xs text-ink-muted">
+              <span className="font-medium uppercase tracking-wider text-neon-cyan/80">Progress</span>
               <span>
                 {board.done.length}/{total} tasks · {progress}%
               </span>
             </div>
-            <ProgressBar value={progress} barClass={color.bar} />
+            <ProgressBar value={progress} barClass={`${color.bar} ${color.text}`} />
           </div>
 
           <div className="flex items-center gap-2 sm:justify-end">
-            <span className="text-xs font-medium text-slate-500">Status:</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-ink-muted">Status:</span>
             {PROJECT_STATUSES.map((status) => {
               const isCurrent = status === project.status;
               return (
@@ -110,10 +110,10 @@ export default async function ProjectDetailPage({ params }: Props) {
                   <button
                     type="submit"
                     disabled={isCurrent}
-                    className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                    className={`rounded-md px-2.5 py-1 text-xs font-medium transition ${
                       isCurrent
-                        ? "bg-slate-800 text-white"
-                        : "border border-slate-200 text-slate-600 hover:bg-slate-100"
+                        ? "bg-neon-purple/20 text-neon-purple text-glow-sm ring-1 ring-inset ring-neon-purple/50"
+                        : "border border-white/10 text-ink-muted hover:border-neon-cyan/50 hover:text-neon-cyan"
                     }`}
                   >
                     {PROJECT_STATUS_META[status].label}

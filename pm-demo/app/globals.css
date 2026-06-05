@@ -1,10 +1,226 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   80s retro / synthwave design tokens
+   --------------------------------------------------------------------------- */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-orbitron);
+
+  --color-bg: #08030f;
+  --color-panel: #170a31;
+  --color-ink: #f4ecff;
+  --color-ink-muted: #a78bdc;
+
+  --color-neon-pink: #ff2e97;
+  --color-neon-magenta: #ff49e1;
+  --color-neon-cyan: #22e6ff;
+  --color-neon-purple: #b14aed;
+  --color-neon-blue: #5b8cff;
+  --color-neon-orange: #ff8a3d;
+  --color-neon-yellow: #ffd34e;
+  --color-neon-green: #34ffb0;
+  --color-neon-red: #ff4d6d;
 }
 
+/* ---------------------------------------------------------------------------
+   Base: dark gradient backdrop + outrun grid floor + CRT scanlines
+   --------------------------------------------------------------------------- */
 body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  color: var(--color-ink);
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(120% 80% at 50% -10%, rgba(177, 74, 237, 0.28), transparent 60%),
+    radial-gradient(120% 60% at 50% 110%, rgba(255, 46, 151, 0.22), transparent 55%),
+    linear-gradient(180deg, #0b0418 0%, #120627 45%, #08030f 100%);
+  background-attachment: fixed;
+}
+
+/* Perspective grid "floor" that fades into the lower half of the viewport. */
+body::before {
+  content: "";
+  position: fixed;
+  left: -50%;
+  right: -50%;
+  bottom: 0;
+  height: 65vh;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(34, 230, 255, 0.45) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 46, 151, 0.38) 1px, transparent 1px);
+  background-size: 44px 44px;
+  transform: perspective(340px) rotateX(62deg);
+  transform-origin: bottom center;
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 75%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 75%);
+}
+
+/* Subtle CRT scanlines + vignette. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      rgba(0, 0, 0, 0.16) 3px,
+      transparent 4px
+    ),
+    radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.45) 100%);
+}
+
+::selection {
+  background: var(--color-neon-pink);
+  color: #08030f;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-neon-purple) transparent;
+}
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--color-neon-pink), var(--color-neon-purple));
+  border-radius: 9999px;
+}
+
+/* ---------------------------------------------------------------------------
+   Reusable synthwave components
+   --------------------------------------------------------------------------- */
+@layer components {
+  /* Glass panel with neon edge + outer glow. */
+  .panel {
+    border-radius: 0.85rem;
+    border: 1px solid rgba(177, 74, 237, 0.35);
+    background:
+      linear-gradient(180deg, rgba(38, 16, 74, 0.72), rgba(16, 7, 36, 0.72));
+    backdrop-filter: blur(8px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 0 0 1px rgba(255, 46, 151, 0.05),
+      0 18px 48px -22px rgba(177, 74, 237, 0.75);
+  }
+
+  .panel-hover {
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .panel-hover:hover {
+    transform: translateY(-3px);
+    border-color: rgba(34, 230, 255, 0.6);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 26px -4px rgba(34, 230, 255, 0.5),
+      0 22px 56px -22px rgba(255, 46, 151, 0.6);
+  }
+
+  /* Form fields. */
+  .field {
+    width: 100%;
+    border-radius: 0.6rem;
+    border: 1px solid rgba(177, 74, 237, 0.4);
+    background: rgba(10, 4, 24, 0.7);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-ink);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field::placeholder {
+    color: rgba(167, 139, 220, 0.55);
+  }
+  .field:focus {
+    border-color: var(--color-neon-cyan);
+    box-shadow: 0 0 0 3px rgba(34, 230, 255, 0.18), 0 0 18px -4px rgba(34, 230, 255, 0.55);
+  }
+  /* Make the native date picker indicator visible on the dark field. */
+  .field::-webkit-calendar-picker-indicator {
+    filter: invert(0.8) sepia(1) saturate(5) hue-rotate(265deg);
+    cursor: pointer;
+  }
+  .field option {
+    background: #170a31;
+    color: var(--color-ink);
+  }
+
+  /* Primary neon gradient button. */
+  .btn-neon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.6rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0a0418;
+    background: linear-gradient(95deg, var(--color-neon-cyan), var(--color-neon-pink));
+    box-shadow: 0 0 22px -4px rgba(255, 46, 151, 0.7);
+    transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  }
+  .btn-neon:hover {
+    filter: brightness(1.12);
+    box-shadow: 0 0 30px -2px rgba(34, 230, 255, 0.8);
+  }
+  .btn-neon:active {
+    transform: translateY(1px);
+  }
+  .btn-neon:disabled {
+    opacity: 0.55;
+    filter: grayscale(0.3);
+  }
+
+  /* Outlined / ghost button. */
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 0.6rem;
+    border: 1px solid rgba(177, 74, 237, 0.45);
+    background: rgba(177, 74, 237, 0.08);
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink-muted);
+    transition: color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .btn-ghost:hover {
+    color: var(--color-neon-cyan);
+    border-color: var(--color-neon-cyan);
+    background: rgba(34, 230, 255, 0.1);
+    box-shadow: 0 0 18px -6px rgba(34, 230, 255, 0.7);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Glow utilities
+   --------------------------------------------------------------------------- */
+@layer utilities {
+  /* Neon text glow keyed off the element's own text color. */
+  .text-glow {
+    text-shadow: 0 0 8px currentColor, 0 0 22px color-mix(in srgb, currentColor 55%, transparent);
+  }
+  .text-glow-sm {
+    text-shadow: 0 0 6px color-mix(in srgb, currentColor 70%, transparent);
+  }
+  .glow-pink {
+    box-shadow: 0 0 22px -4px rgba(255, 46, 151, 0.7);
+  }
+  .glow-cyan {
+    box-shadow: 0 0 22px -4px rgba(34, 230, 255, 0.7);
+  }
+  .glow-purple {
+    box-shadow: 0 0 22px -4px rgba(177, 74, 237, 0.7);
+  }
+  .glow-green {
+    box-shadow: 0 0 22px -4px rgba(52, 255, 176, 0.7);
+  }
 }

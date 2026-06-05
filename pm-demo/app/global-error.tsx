@@ -47,13 +47,24 @@ export default function GlobalError({
           justifyContent: "center",
           fontFamily:
             "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
-          background: "#f8fafc",
-          color: "#0f172a",
+          background:
+            "radial-gradient(120% 80% at 50% -10%, rgba(177,74,237,0.3), transparent 60%), radial-gradient(120% 60% at 50% 110%, rgba(255,46,151,0.25), transparent 55%), linear-gradient(180deg, #0b0418 0%, #120627 45%, #08030f 100%)",
+          color: "#f4ecff",
           textAlign: "center",
           padding: "2rem",
         }}
       >
-        <h2 style={{ fontSize: "1.25rem", fontWeight: 600, margin: 0 }}>
+        <h2
+          style={{
+            fontSize: "1.35rem",
+            fontWeight: 800,
+            margin: 0,
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+            color: "#ff4d6d",
+            textShadow: "0 0 10px #ff4d6d, 0 0 26px rgba(255,77,109,0.6)",
+          }}
+        >
           Something went wrong
         </h2>
         <p
@@ -61,7 +72,7 @@ export default function GlobalError({
             marginTop: "0.5rem",
             maxWidth: "28rem",
             fontSize: "0.875rem",
-            color: "#64748b",
+            color: "#a78bdc",
           }}
         >
           An unexpected error occurred. Try again, or reload the page.
@@ -70,14 +81,15 @@ export default function GlobalError({
           onClick={() => retry()}
           style={{
             marginTop: "1.5rem",
-            borderRadius: "0.5rem",
+            borderRadius: "0.6rem",
             border: "none",
-            background: "#4f46e5",
-            color: "#fff",
-            padding: "0.5rem 1rem",
+            background: "linear-gradient(95deg, #22e6ff, #ff2e97)",
+            color: "#0a0418",
+            padding: "0.55rem 1.1rem",
             fontSize: "0.875rem",
-            fontWeight: 500,
+            fontWeight: 700,
             cursor: "pointer",
+            boxShadow: "0 0 22px -4px rgba(255,46,151,0.8)",
           }}
         >
           Try again

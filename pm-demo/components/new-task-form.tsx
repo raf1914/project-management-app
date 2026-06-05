@@ -4,8 +4,7 @@ import { useActionState, useEffect, useRef } from "react";
 import { createTask, type FormState } from "@/lib/actions";
 import { PlusIcon } from "./icons";
 
-const field =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+const field = "field";
 
 /**
  * Inline "add task" form. Uses `useActionState` for the pending flag and
@@ -26,7 +25,7 @@ export function NewTaskForm({ projectId }: { projectId: string }) {
     <form
       ref={formRef}
       action={formAction}
-      className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+      className="panel p-4"
     >
       <input type="hidden" name="projectId" value={projectId} />
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-12">
@@ -74,14 +73,10 @@ export function NewTaskForm({ projectId }: { projectId: string }) {
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-3">
-        <p className="text-sm text-rose-600" aria-live="polite">
+        <p className="text-sm font-medium text-neon-red text-glow-sm" aria-live="polite">
           {state?.error ?? ""}
         </p>
-        <button
-          type="submit"
-          disabled={pending}
-          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:opacity-60"
-        >
+        <button type="submit" disabled={pending} className="btn-neon">
           <PlusIcon width={16} height={16} />
           {pending ? "Adding…" : "Add task"}
         </button>

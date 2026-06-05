@@ -10,14 +10,14 @@ export default function NewProjectPage() {
       <header>
         <Link
           href="/projects"
-          className="text-sm font-medium text-slate-500 hover:text-slate-700"
+          className="text-sm font-medium text-neon-cyan/80 transition hover:text-neon-cyan hover:text-glow-sm"
         >
           ← Projects
         </Link>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
+        <h1 className="mt-2 font-display text-2xl font-bold uppercase tracking-wide text-ink text-glow-sm">
           New project
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-ink-muted">
           Give your project a name and an accent color to get started.
         </p>
       </header>

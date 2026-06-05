@@ -16,17 +16,14 @@ export default async function ProjectsPage() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+          <h1 className="font-display text-2xl font-bold uppercase tracking-wide text-ink text-glow-sm">
             Projects
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-ink-muted">
             {projects.length} {projects.length === 1 ? "project" : "projects"}
           </p>
         </div>
-        <Link
-          href="/projects/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700"
-        >
+        <Link href="/projects/new" className="btn-neon">
           <PlusIcon width={16} height={16} />
           New Project
         </Link>
@@ -37,10 +34,7 @@ export default async function ProjectsPage() {
           title="No projects yet"
           description="Create your first project to start tracking tasks."
           action={
-            <Link
-              href="/projects/new"
-              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
-            >
+            <Link href="/projects/new" className="btn-neon">
               <PlusIcon width={16} height={16} />
               New Project
             </Link>

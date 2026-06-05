@@ -18,25 +18,25 @@ export function TaskCard({ task }: { task: Task }) {
   const overdue = task.status !== "done" && isOverdue(task.dueDate);
 
   return (
-    <article className="group rounded-lg border border-slate-200 bg-white p-3 shadow-sm transition-shadow hover:shadow-md">
+    <article className="group rounded-lg border border-white/10 bg-[#0e0524]/70 p-3 backdrop-blur-sm transition-all hover:border-neon-cyan/50 hover:shadow-[0_0_22px_-6px_rgba(34,230,255,0.6)]">
       <div className="flex items-start justify-between gap-2">
-        <h4 className="min-w-0 break-words text-sm font-medium leading-snug text-slate-800">
+        <h4 className="min-w-0 break-words text-sm font-medium leading-snug text-ink">
           {task.title}
         </h4>
         <Badge className={`shrink-0 ${priority.badge}`}>{priority.label}</Badge>
       </div>
 
       {task.description && (
-        <p className="mt-1.5 line-clamp-2 text-xs text-slate-500">
+        <p className="mt-1.5 line-clamp-2 text-xs text-ink-muted">
           {task.description}
         </p>
       )}
 
       <div className="mt-3 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2 text-xs text-ink-muted">
           <Avatar name={task.assignee} />
           {task.dueDate && (
-            <span className={overdue ? "font-medium text-rose-600" : ""}>
+            <span className={overdue ? "font-semibold text-neon-red text-glow-sm" : ""}>
               {overdue ? "Overdue · " : "Due "}
               {formatDate(task.dueDate)}
             </span>
@@ -47,7 +47,7 @@ export function TaskCard({ task }: { task: Task }) {
           {prev && (
             <form action={setTaskStatus.bind(null, task.id, prev)}>
               <SubmitButton
-                className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
+                className="rounded-md p-1 text-ink-muted/70 transition-colors hover:bg-white/10 hover:text-neon-cyan disabled:opacity-50"
               >
                 <span className="sr-only">Move to {STATUS_META[prev].label}</span>
                 <ArrowLeftIcon width={16} height={16} />
@@ -57,7 +57,7 @@ export function TaskCard({ task }: { task: Task }) {
           {next && (
             <form action={setTaskStatus.bind(null, task.id, next)}>
               <SubmitButton
-                className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
+                className="rounded-md p-1 text-ink-muted/70 transition-colors hover:bg-white/10 hover:text-neon-cyan disabled:opacity-50"
               >
                 <span className="sr-only">Move to {STATUS_META[next].label}</span>
                 <ArrowRightIcon width={16} height={16} />
@@ -68,7 +68,7 @@ export function TaskCard({ task }: { task: Task }) {
             <ConfirmButton
               confirmMessage={`Delete task "${task.title}"?`}
               title="Delete task"
-              className="rounded-md p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-600 disabled:opacity-50"
+              className="rounded-md p-1 text-ink-muted/70 transition-colors hover:bg-neon-red/10 hover:text-neon-red disabled:opacity-50"
             >
               <span className="sr-only">Delete task</span>
               <TrashIcon width={16} height={16} />

@@ -25,16 +25,13 @@ export default function Error({
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
-      <h2 className="text-xl font-semibold text-slate-900">
+      <h2 className="font-display text-xl font-bold uppercase tracking-wide text-neon-red text-glow">
         Something went wrong
       </h2>
-      <p className="mt-2 max-w-md text-sm text-slate-500">
+      <p className="mt-2 max-w-md text-sm text-ink-muted">
         An unexpected error occurred while loading this page.
       </p>
-      <button
-        onClick={() => retry()}
-        className="mt-6 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700"
-      >
+      <button onClick={() => retry()} className="btn-neon mt-6">
         Try again
       </button>
     </div>

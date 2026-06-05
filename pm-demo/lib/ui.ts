@@ -18,21 +18,21 @@ export const STATUS_META: Record<
 > = {
   todo: {
     label: "To Do",
-    badge: "bg-slate-100 text-slate-700 ring-slate-200",
-    dot: "bg-slate-400",
-    column: "border-slate-300",
+    badge: "bg-neon-cyan/10 text-neon-cyan ring-neon-cyan/40 text-glow-sm",
+    dot: "bg-neon-cyan text-neon-cyan",
+    column: "border-t-neon-cyan",
   },
   "in-progress": {
     label: "In Progress",
-    badge: "bg-blue-100 text-blue-700 ring-blue-200",
-    dot: "bg-blue-500",
-    column: "border-blue-400",
+    badge: "bg-neon-pink/10 text-neon-pink ring-neon-pink/40 text-glow-sm",
+    dot: "bg-neon-pink text-neon-pink",
+    column: "border-t-neon-pink",
   },
   done: {
     label: "Done",
-    badge: "bg-emerald-100 text-emerald-700 ring-emerald-200",
-    dot: "bg-emerald-500",
-    column: "border-emerald-400",
+    badge: "bg-neon-green/10 text-neon-green ring-neon-green/40 text-glow-sm",
+    dot: "bg-neon-green text-neon-green",
+    column: "border-t-neon-green",
   },
 };
 
@@ -40,12 +40,18 @@ export const PRIORITY_META: Record<
   Priority,
   { label: string; badge: string }
 > = {
-  low: { label: "Low", badge: "bg-slate-100 text-slate-600 ring-slate-200" },
+  low: {
+    label: "Low",
+    badge: "bg-neon-blue/10 text-neon-blue ring-neon-blue/40 text-glow-sm",
+  },
   medium: {
     label: "Medium",
-    badge: "bg-amber-100 text-amber-700 ring-amber-200",
+    badge: "bg-neon-yellow/10 text-neon-yellow ring-neon-yellow/40 text-glow-sm",
   },
-  high: { label: "High", badge: "bg-rose-100 text-rose-700 ring-rose-200" },
+  high: {
+    label: "High",
+    badge: "bg-neon-red/10 text-neon-red ring-neon-red/40 text-glow-sm",
+  },
 };
 
 export const PROJECT_STATUS_META: Record<
@@ -54,15 +60,15 @@ export const PROJECT_STATUS_META: Record<
 > = {
   active: {
     label: "Active",
-    badge: "bg-emerald-100 text-emerald-700 ring-emerald-200",
+    badge: "bg-neon-green/10 text-neon-green ring-neon-green/40 text-glow-sm",
   },
   "on-hold": {
     label: "On Hold",
-    badge: "bg-amber-100 text-amber-700 ring-amber-200",
+    badge: "bg-neon-orange/10 text-neon-orange ring-neon-orange/40 text-glow-sm",
   },
   completed: {
     label: "Completed",
-    badge: "bg-slate-100 text-slate-600 ring-slate-200",
+    badge: "bg-neon-purple/10 text-neon-purple ring-neon-purple/40 text-glow-sm",
   },
 };
 
@@ -70,16 +76,12 @@ export const PROJECT_COLOR_META: Record<
   ProjectColor,
   { bg: string; text: string; bar: string }
 > = {
-  indigo: { bg: "bg-indigo-100", text: "text-indigo-700", bar: "bg-indigo-500" },
-  emerald: {
-    bg: "bg-emerald-100",
-    text: "text-emerald-700",
-    bar: "bg-emerald-500",
-  },
-  amber: { bg: "bg-amber-100", text: "text-amber-700", bar: "bg-amber-500" },
-  rose: { bg: "bg-rose-100", text: "text-rose-700", bar: "bg-rose-500" },
-  sky: { bg: "bg-sky-100", text: "text-sky-700", bar: "bg-sky-500" },
-  violet: { bg: "bg-violet-100", text: "text-violet-700", bar: "bg-violet-500" },
+  indigo: { bg: "bg-neon-purple/15", text: "text-neon-purple", bar: "bg-neon-purple" },
+  emerald: { bg: "bg-neon-green/15", text: "text-neon-green", bar: "bg-neon-green" },
+  amber: { bg: "bg-neon-orange/15", text: "text-neon-orange", bar: "bg-neon-orange" },
+  rose: { bg: "bg-neon-pink/15", text: "text-neon-pink", bar: "bg-neon-pink" },
+  sky: { bg: "bg-neon-cyan/15", text: "text-neon-cyan", bar: "bg-neon-cyan" },
+  violet: { bg: "bg-neon-magenta/15", text: "text-neon-magenta", bar: "bg-neon-magenta" },
 };
 
 export const PROJECT_COLORS = Object.keys(
