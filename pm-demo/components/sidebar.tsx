@@ -10,7 +10,7 @@ export function Sidebar() {
           PM
         </span>
         <div className="leading-tight">
-          <p className="font-display text-sm font-bold uppercase tracking-wider text-ink text-glow-sm">
+          <p className="font-display text-sm font-bold uppercase tracking-wider holo-text">
             Project Hub
           </p>
           <p className="text-xs uppercase tracking-[0.2em] text-neon-cyan/70">

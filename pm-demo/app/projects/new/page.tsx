@@ -14,7 +14,7 @@ export default function NewProjectPage() {
         >
           ← Projects
         </Link>
-        <h1 className="mt-2 font-display text-2xl font-bold uppercase tracking-wide text-ink text-glow-sm">
+        <h1 className="mt-2 font-display text-3xl font-bold uppercase tracking-wide holo-text">
           New project
         </h1>
         <p className="mt-1 text-sm text-ink-muted">

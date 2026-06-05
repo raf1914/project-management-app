@@ -21,7 +21,7 @@ export function StatCard({
         </p>
         <span className={`${accent} text-glow`}>{icon}</span>
       </div>
-      <p className="mt-2 font-display text-3xl font-bold tracking-tight text-ink">
+      <p className="mt-2 font-display text-3xl font-bold tracking-tight holo-text">
         {value}
       </p>
       {hint && <p className="mt-1 text-xs text-ink-muted">{hint}</p>}

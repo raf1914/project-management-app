@@ -61,7 +61,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             </span>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-3">
-                <h1 className="break-words font-display text-2xl font-bold tracking-wide text-ink text-glow-sm">
+                <h1 className="break-words font-display text-2xl font-bold tracking-wide holo-text">
                   {project.name}
                 </h1>
                 <Badge className={`shrink-0 ${PROJECT_STATUS_META[project.status].badge}`}>

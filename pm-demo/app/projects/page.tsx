@@ -16,7 +16,7 @@ export default async function ProjectsPage() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold uppercase tracking-wide text-ink text-glow-sm">
+          <h1 className="font-display text-3xl font-bold uppercase tracking-wide holo-text">
             Projects
           </h1>
           <p className="mt-1 text-sm text-ink-muted">

@@ -25,7 +25,7 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold uppercase tracking-wide text-ink text-glow-sm">
+          <h1 className="font-display text-3xl font-bold uppercase tracking-wide holo-text">
             Dashboard
           </h1>
           <p className="mt-1 text-sm text-ink-muted">

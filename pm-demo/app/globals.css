@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   80s retro / industrial-cyber design tokens — gunmetal + electric blue/cyan,
-   ember & steel accents (no candy pink/magenta).
+   Holographic command-center HUD — deep space base, electric cyan/blue with
+   a violet-magenta holographic shimmer, animated outrun grid.
    --------------------------------------------------------------------------- */
 @theme inline {
   --font-sans: var(--font-geist-sans);
@@ -15,7 +15,7 @@
   --color-ink-muted: #8395b3;
 
   --color-neon-pink: #ff5a3c;     /* ember */
-  --color-neon-magenta: #7c70ff;  /* steel violet */
+  --color-neon-magenta: #b14aff;  /* holographic violet-magenta */
   --color-neon-cyan: #2ee6ff;
   --color-neon-purple: #5b7cff;   /* electric steel-blue */
   --color-neon-blue: #2f6bff;
@@ -26,20 +26,20 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Base: cold gunmetal backdrop + outrun grid floor + CRT scanlines
+   Base: deep-space backdrop + animated perspective grid + CRT scanlines
    --------------------------------------------------------------------------- */
 body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   color: var(--color-ink);
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(120% 80% at 50% -10%, rgba(47, 107, 255, 0.24), transparent 60%),
-    radial-gradient(120% 55% at 50% 112%, rgba(255, 90, 60, 0.12), transparent 55%),
+    radial-gradient(120% 80% at 50% -10%, rgba(47, 107, 255, 0.26), transparent 60%),
+    radial-gradient(120% 55% at 50% 114%, rgba(46, 230, 255, 0.14), transparent 58%),
     linear-gradient(180deg, #060b14 0%, #0a1120 45%, #04070d 100%);
   background-attachment: fixed;
 }
 
-/* Perspective grid "floor" that fades into the lower half of the viewport. */
+/* Perspective grid "floor" that scrolls toward the viewer. */
 body::before {
   content: "";
   position: fixed;
@@ -50,16 +50,22 @@ body::before {
   z-index: -2;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(46, 230, 255, 0.4) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(47, 107, 255, 0.34) 1px, transparent 1px);
+    linear-gradient(rgba(46, 230, 255, 0.45) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(47, 107, 255, 0.36) 1px, transparent 1px);
   background-size: 46px 46px;
   transform: perspective(340px) rotateX(62deg);
   transform-origin: bottom center;
-  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 75%);
-  mask-image: linear-gradient(to top, #000 0%, transparent 75%);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 78%);
+  mask-image: linear-gradient(to top, #000 0%, transparent 78%);
+  animation: grid-pull 7s linear infinite;
+}
+@keyframes grid-pull {
+  to {
+    background-position: 0 46px, 0 46px;
+  }
 }
 
-/* Subtle CRT scanlines + vignette. */
+/* CRT scanlines + vignette. */
 body::after {
   content: "";
   position: fixed;
@@ -75,6 +81,12 @@ body::after {
       transparent 4px
     ),
     radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
 }
 
 ::selection {
@@ -99,8 +111,9 @@ body::after {
    Reusable components
    --------------------------------------------------------------------------- */
 @layer components {
-  /* Brushed-steel glass panel with electric edge + outer glow. */
+  /* Glass panel with electric edge, outer glow, and two-tone HUD corner brackets. */
   .panel {
+    position: relative;
     border-radius: 0.7rem;
     border: 1px solid rgba(91, 124, 255, 0.32);
     background: linear-gradient(180deg, rgba(18, 28, 48, 0.78), rgba(8, 14, 26, 0.82));
@@ -110,17 +123,16 @@ body::after {
       0 0 0 1px rgba(47, 107, 255, 0.05),
       0 18px 48px -22px rgba(18, 40, 90, 0.95);
   }
-
   .panel-hover {
     transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   }
   .panel-hover:hover {
     transform: translateY(-3px);
-    border-color: rgba(46, 230, 255, 0.6);
+    border-color: rgba(46, 230, 255, 0.55);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.09),
-      0 0 26px -4px rgba(46, 230, 255, 0.45),
-      0 22px 56px -22px rgba(47, 107, 255, 0.6);
+      0 0 28px -4px rgba(46, 230, 255, 0.5),
+      0 22px 56px -22px rgba(47, 107, 255, 0.55);
   }
 
   /* Form fields. */
@@ -151,8 +163,10 @@ body::after {
     color: var(--color-ink);
   }
 
-  /* Primary HUD / console button — gunmetal body, electric-cyan edge. */
+  /* Primary gunmetal HUD button — electric-cyan edge, light-sheen sweep on hover. */
   .btn-neon {
+    position: relative;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -163,20 +177,35 @@ body::after {
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: #cdeeff;
-    background: linear-gradient(180deg, #1a2741 0%, #0b1322 100%);
+    background: linear-gradient(180deg, #1b2942 0%, #0b1322 100%);
     border: 1px solid rgba(46, 230, 255, 0.5);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.12),
       0 0 18px -7px rgba(46, 230, 255, 0.85);
-    text-shadow: 0 0 8px rgba(46, 230, 255, 0.55);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    text-shadow: 0 0 8px rgba(46, 230, 255, 0.5);
+    transition: box-shadow 0.18s ease, transform 0.1s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .btn-neon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 45%;
+    background: linear-gradient(100deg, transparent, rgba(120, 220, 255, 0.35), transparent);
+    transform: skewX(-18deg);
+    transition: left 0.55s ease;
+    pointer-events: none;
   }
   .btn-neon:hover {
-    border-color: var(--color-neon-cyan);
     color: #eafcff;
+    border-color: var(--color-neon-cyan);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.16),
       0 0 26px -3px rgba(46, 230, 255, 1);
+  }
+  .btn-neon:hover::before {
+    left: 130%;
   }
   .btn-neon:active {
     transform: translateY(1px);
@@ -191,7 +220,7 @@ body::after {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    border-radius: 0.4rem;
+    border-radius: 0.45rem;
     border: 1px solid rgba(91, 124, 255, 0.45);
     background: rgba(47, 107, 255, 0.08);
     padding: 0.4rem 0.8rem;
@@ -211,9 +240,18 @@ body::after {
 }
 
 /* ---------------------------------------------------------------------------
-   Glow utilities
+   Utilities
    --------------------------------------------------------------------------- */
 @layer utilities {
+  /* Holographic gradient text (cyan -> blue -> violet) with a soft glow. */
+  .holo-text {
+    background-image: linear-gradient(96deg, #6df3ff 0%, #36b6ff 55%, #2f6bff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter: drop-shadow(0 0 10px rgba(46, 230, 255, 0.3));
+  }
   .text-glow {
     text-shadow: 0 0 8px currentColor, 0 0 22px color-mix(in srgb, currentColor 55%, transparent);
   }
@@ -222,12 +260,6 @@ body::after {
   }
   .glow-cyan {
     box-shadow: 0 0 22px -4px rgba(46, 230, 255, 0.7);
-  }
-  .glow-blue {
-    box-shadow: 0 0 22px -4px rgba(47, 107, 255, 0.7);
-  }
-  .glow-ember {
-    box-shadow: 0 0 22px -4px rgba(255, 90, 60, 0.7);
   }
   .glow-green {
     box-shadow: 0 0 22px -4px rgba(43, 255, 155, 0.7);
