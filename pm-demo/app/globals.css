@@ -33,6 +33,11 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   color: var(--color-ink);
   background-color: var(--color-bg);
+  /* Nebula-wash intensities — scaled down at smaller breakpoints below so the
+     glows don't overpower compact viewports. */
+  --neb-1: rgba(79, 134, 255, 0.15);
+  --neb-2: rgba(47, 224, 219, 0.12);
+  --neb-3: rgba(47, 224, 219, 0.14);
   background-image:
     /* starfield (tiled points, varied size + tint for depth) */
     radial-gradient(1.2px 1.2px at 15% 22%, rgba(255, 255, 255, 0.9), transparent 60%),
@@ -41,9 +46,9 @@ body {
     radial-gradient(1px 1px at 85% 16%, rgba(255, 255, 255, 0.6), transparent 60%),
     radial-gradient(1px 1px at 8% 64%, rgba(210, 235, 255, 0.6), transparent 60%),
     /* nebula washes (all cool: blue + teal) */
-    radial-gradient(60% 50% at 16% 10%, rgba(79, 134, 255, 0.20), transparent 70%),
-    radial-gradient(55% 45% at 86% 6%, rgba(47, 224, 219, 0.16), transparent 70%),
-    radial-gradient(75% 55% at 50% 116%, rgba(47, 224, 219, 0.14), transparent 65%),
+    radial-gradient(58% 46% at 12% -8%, var(--neb-1), transparent 72%),
+    radial-gradient(52% 44% at 90% -6%, var(--neb-2), transparent 72%),
+    radial-gradient(75% 55% at 50% 116%, var(--neb-3), transparent 65%),
     /* void base */
     linear-gradient(180deg, #080c18 0%, #0a1020 45%, #05070f 100%);
   background-size:
@@ -99,6 +104,29 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   body::before {
     animation: none;
+  }
+}
+
+/* Tone the background glows down on smaller screens so they don't overpower. */
+@media (max-width: 768px) {
+  body {
+    --neb-1: rgba(79, 134, 255, 0.09);
+    --neb-2: rgba(47, 224, 219, 0.075);
+    --neb-3: rgba(47, 224, 219, 0.09);
+  }
+  body::before {
+    height: 45vh;
+    opacity: 0.65;
+  }
+}
+@media (max-width: 480px) {
+  body {
+    --neb-1: rgba(79, 134, 255, 0.055);
+    --neb-2: rgba(47, 224, 219, 0.05);
+    --neb-3: rgba(47, 224, 219, 0.06);
+  }
+  body::before {
+    opacity: 0.5;
   }
 }
 
