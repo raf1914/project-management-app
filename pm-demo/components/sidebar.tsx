@@ -6,7 +6,7 @@ export function Sidebar() {
   return (
     <aside className="flex w-full shrink-0 flex-col border-b border-neon-purple/20 bg-[#0c0420]/80 backdrop-blur-md md:h-screen md:w-64 md:border-b-0 md:border-r">
       <div className="flex items-center gap-2.5 px-5 py-5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-neon-pink to-neon-purple text-sm font-bold text-white shadow-[0_0_18px_-2px_rgba(255,46,151,0.8)]">
+        <span className="flex h-9 w-9 items-center justify-center rounded-md bg-gradient-to-br from-neon-blue to-neon-cyan text-sm font-bold text-[#04070d] shadow-[0_0_18px_-2px_rgba(46,230,255,0.85)]">
           PM
         </span>
         <div className="leading-tight">

@@ -1,40 +1,41 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   80s retro / synthwave design tokens
+   80s retro / industrial-cyber design tokens — gunmetal + electric blue/cyan,
+   ember & steel accents (no candy pink/magenta).
    --------------------------------------------------------------------------- */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-orbitron);
 
-  --color-bg: #08030f;
-  --color-panel: #170a31;
-  --color-ink: #f4ecff;
-  --color-ink-muted: #a78bdc;
+  --color-bg: #04070d;
+  --color-panel: #0c1421;
+  --color-ink: #e8f1ff;
+  --color-ink-muted: #8395b3;
 
-  --color-neon-pink: #ff2e97;
-  --color-neon-magenta: #ff49e1;
-  --color-neon-cyan: #22e6ff;
-  --color-neon-purple: #b14aed;
-  --color-neon-blue: #5b8cff;
-  --color-neon-orange: #ff8a3d;
-  --color-neon-yellow: #ffd34e;
-  --color-neon-green: #34ffb0;
-  --color-neon-red: #ff4d6d;
+  --color-neon-pink: #ff5a3c;     /* ember */
+  --color-neon-magenta: #7c70ff;  /* steel violet */
+  --color-neon-cyan: #2ee6ff;
+  --color-neon-purple: #5b7cff;   /* electric steel-blue */
+  --color-neon-blue: #2f6bff;
+  --color-neon-orange: #ff8a2b;
+  --color-neon-yellow: #ffc233;   /* amber */
+  --color-neon-green: #2bff9b;
+  --color-neon-red: #ff3b30;
 }
 
 /* ---------------------------------------------------------------------------
-   Base: dark gradient backdrop + outrun grid floor + CRT scanlines
+   Base: cold gunmetal backdrop + outrun grid floor + CRT scanlines
    --------------------------------------------------------------------------- */
 body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   color: var(--color-ink);
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(120% 80% at 50% -10%, rgba(177, 74, 237, 0.28), transparent 60%),
-    radial-gradient(120% 60% at 50% 110%, rgba(255, 46, 151, 0.22), transparent 55%),
-    linear-gradient(180deg, #0b0418 0%, #120627 45%, #08030f 100%);
+    radial-gradient(120% 80% at 50% -10%, rgba(47, 107, 255, 0.24), transparent 60%),
+    radial-gradient(120% 55% at 50% 112%, rgba(255, 90, 60, 0.12), transparent 55%),
+    linear-gradient(180deg, #060b14 0%, #0a1120 45%, #04070d 100%);
   background-attachment: fixed;
 }
 
@@ -49,9 +50,9 @@ body::before {
   z-index: -2;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(34, 230, 255, 0.45) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 46, 151, 0.38) 1px, transparent 1px);
-  background-size: 44px 44px;
+    linear-gradient(rgba(46, 230, 255, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(47, 107, 255, 0.34) 1px, transparent 1px);
+  background-size: 46px 46px;
   transform: perspective(340px) rotateX(62deg);
   transform-origin: bottom center;
   -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 75%);
@@ -70,45 +71,44 @@ body::after {
       to bottom,
       transparent 0,
       transparent 2px,
-      rgba(0, 0, 0, 0.16) 3px,
+      rgba(0, 0, 0, 0.18) 3px,
       transparent 4px
     ),
-    radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.45) 100%);
+    radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
 }
 
 ::selection {
-  background: var(--color-neon-pink);
-  color: #08030f;
+  background: var(--color-neon-cyan);
+  color: #04070d;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-neon-purple) transparent;
+  scrollbar-color: var(--color-neon-blue) transparent;
 }
 *::-webkit-scrollbar {
   width: 9px;
   height: 9px;
 }
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(var(--color-neon-pink), var(--color-neon-purple));
+  background: linear-gradient(var(--color-neon-cyan), var(--color-neon-blue));
   border-radius: 9999px;
 }
 
 /* ---------------------------------------------------------------------------
-   Reusable synthwave components
+   Reusable components
    --------------------------------------------------------------------------- */
 @layer components {
-  /* Glass panel with neon edge + outer glow. */
+  /* Brushed-steel glass panel with electric edge + outer glow. */
   .panel {
-    border-radius: 0.85rem;
-    border: 1px solid rgba(177, 74, 237, 0.35);
-    background:
-      linear-gradient(180deg, rgba(38, 16, 74, 0.72), rgba(16, 7, 36, 0.72));
+    border-radius: 0.7rem;
+    border: 1px solid rgba(91, 124, 255, 0.32);
+    background: linear-gradient(180deg, rgba(18, 28, 48, 0.78), rgba(8, 14, 26, 0.82));
     backdrop-filter: blur(8px);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.06),
-      0 0 0 1px rgba(255, 46, 151, 0.05),
-      0 18px 48px -22px rgba(177, 74, 237, 0.75);
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 0 0 1px rgba(47, 107, 255, 0.05),
+      0 18px 48px -22px rgba(18, 40, 90, 0.95);
   }
 
   .panel-hover {
@@ -116,19 +116,19 @@ body::after {
   }
   .panel-hover:hover {
     transform: translateY(-3px);
-    border-color: rgba(34, 230, 255, 0.6);
+    border-color: rgba(46, 230, 255, 0.6);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 0 26px -4px rgba(34, 230, 255, 0.5),
-      0 22px 56px -22px rgba(255, 46, 151, 0.6);
+      inset 0 1px 0 rgba(255, 255, 255, 0.09),
+      0 0 26px -4px rgba(46, 230, 255, 0.45),
+      0 22px 56px -22px rgba(47, 107, 255, 0.6);
   }
 
   /* Form fields. */
   .field {
     width: 100%;
-    border-radius: 0.6rem;
-    border: 1px solid rgba(177, 74, 237, 0.4);
-    background: rgba(10, 4, 24, 0.7);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(91, 124, 255, 0.4);
+    background: rgba(6, 12, 24, 0.75);
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     color: var(--color-ink);
@@ -136,46 +136,54 @@ body::after {
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .field::placeholder {
-    color: rgba(167, 139, 220, 0.55);
+    color: rgba(131, 149, 179, 0.6);
   }
   .field:focus {
     border-color: var(--color-neon-cyan);
-    box-shadow: 0 0 0 3px rgba(34, 230, 255, 0.18), 0 0 18px -4px rgba(34, 230, 255, 0.55);
+    box-shadow: 0 0 0 3px rgba(46, 230, 255, 0.18), 0 0 18px -4px rgba(46, 230, 255, 0.55);
   }
-  /* Make the native date picker indicator visible on the dark field. */
   .field::-webkit-calendar-picker-indicator {
-    filter: invert(0.8) sepia(1) saturate(5) hue-rotate(265deg);
+    filter: invert(0.85);
     cursor: pointer;
   }
   .field option {
-    background: #170a31;
+    background: #0c1421;
     color: var(--color-ink);
   }
 
-  /* Primary neon gradient button. */
+  /* Primary HUD / console button — gunmetal body, electric-cyan edge. */
   .btn-neon {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    border-radius: 0.6rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #0a0418;
-    background: linear-gradient(95deg, var(--color-neon-cyan), var(--color-neon-pink));
-    box-shadow: 0 0 22px -4px rgba(255, 46, 151, 0.7);
-    transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+    border-radius: 0.4rem;
+    padding: 0.5rem 1.05rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #cdeeff;
+    background: linear-gradient(180deg, #1a2741 0%, #0b1322 100%);
+    border: 1px solid rgba(46, 230, 255, 0.5);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 0 18px -7px rgba(46, 230, 255, 0.85);
+    text-shadow: 0 0 8px rgba(46, 230, 255, 0.55);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, transform 0.1s ease;
   }
   .btn-neon:hover {
-    filter: brightness(1.12);
-    box-shadow: 0 0 30px -2px rgba(34, 230, 255, 0.8);
+    border-color: var(--color-neon-cyan);
+    color: #eafcff;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 0 26px -3px rgba(46, 230, 255, 1);
   }
   .btn-neon:active {
     transform: translateY(1px);
   }
   .btn-neon:disabled {
-    opacity: 0.55;
-    filter: grayscale(0.3);
+    opacity: 0.5;
+    filter: grayscale(0.4);
   }
 
   /* Outlined / ghost button. */
@@ -183,20 +191,22 @@ body::after {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    border-radius: 0.6rem;
-    border: 1px solid rgba(177, 74, 237, 0.45);
-    background: rgba(177, 74, 237, 0.08);
+    border-radius: 0.4rem;
+    border: 1px solid rgba(91, 124, 255, 0.45);
+    background: rgba(47, 107, 255, 0.08);
     padding: 0.4rem 0.8rem;
     font-size: 0.8125rem;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--color-ink-muted);
     transition: color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   }
   .btn-ghost:hover {
     color: var(--color-neon-cyan);
     border-color: var(--color-neon-cyan);
-    background: rgba(34, 230, 255, 0.1);
-    box-shadow: 0 0 18px -6px rgba(34, 230, 255, 0.7);
+    background: rgba(46, 230, 255, 0.1);
+    box-shadow: 0 0 18px -6px rgba(46, 230, 255, 0.7);
   }
 }
 
@@ -204,23 +214,22 @@ body::after {
    Glow utilities
    --------------------------------------------------------------------------- */
 @layer utilities {
-  /* Neon text glow keyed off the element's own text color. */
   .text-glow {
     text-shadow: 0 0 8px currentColor, 0 0 22px color-mix(in srgb, currentColor 55%, transparent);
   }
   .text-glow-sm {
     text-shadow: 0 0 6px color-mix(in srgb, currentColor 70%, transparent);
   }
-  .glow-pink {
-    box-shadow: 0 0 22px -4px rgba(255, 46, 151, 0.7);
-  }
   .glow-cyan {
-    box-shadow: 0 0 22px -4px rgba(34, 230, 255, 0.7);
+    box-shadow: 0 0 22px -4px rgba(46, 230, 255, 0.7);
   }
-  .glow-purple {
-    box-shadow: 0 0 22px -4px rgba(177, 74, 237, 0.7);
+  .glow-blue {
+    box-shadow: 0 0 22px -4px rgba(47, 107, 255, 0.7);
+  }
+  .glow-ember {
+    box-shadow: 0 0 22px -4px rgba(255, 90, 60, 0.7);
   }
   .glow-green {
-    box-shadow: 0 0 22px -4px rgba(52, 255, 176, 0.7);
+    box-shadow: 0 0 22px -4px rgba(43, 255, 155, 0.7);
   }
 }

@@ -48,8 +48,8 @@ export default function GlobalError({
           fontFamily:
             "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
           background:
-            "radial-gradient(120% 80% at 50% -10%, rgba(177,74,237,0.3), transparent 60%), radial-gradient(120% 60% at 50% 110%, rgba(255,46,151,0.25), transparent 55%), linear-gradient(180deg, #0b0418 0%, #120627 45%, #08030f 100%)",
-          color: "#f4ecff",
+            "radial-gradient(120% 80% at 50% -10%, rgba(47,107,255,0.24), transparent 60%), radial-gradient(120% 55% at 50% 112%, rgba(255,90,60,0.12), transparent 55%), linear-gradient(180deg, #060b14 0%, #0a1120 45%, #04070d 100%)",
+          color: "#e8f1ff",
           textAlign: "center",
           padding: "2rem",
         }}
@@ -61,8 +61,8 @@ export default function GlobalError({
             margin: 0,
             textTransform: "uppercase",
             letterSpacing: "0.05em",
-            color: "#ff4d6d",
-            textShadow: "0 0 10px #ff4d6d, 0 0 26px rgba(255,77,109,0.6)",
+            color: "#ff3b30",
+            textShadow: "0 0 10px #ff3b30, 0 0 26px rgba(255,59,48,0.6)",
           }}
         >
           Something went wrong
@@ -72,7 +72,7 @@ export default function GlobalError({
             marginTop: "0.5rem",
             maxWidth: "28rem",
             fontSize: "0.875rem",
-            color: "#a78bdc",
+            color: "#8395b3",
           }}
         >
           An unexpected error occurred. Try again, or reload the page.
@@ -81,15 +81,18 @@ export default function GlobalError({
           onClick={() => retry()}
           style={{
             marginTop: "1.5rem",
-            borderRadius: "0.6rem",
-            border: "none",
-            background: "linear-gradient(95deg, #22e6ff, #ff2e97)",
-            color: "#0a0418",
-            padding: "0.55rem 1.1rem",
-            fontSize: "0.875rem",
+            borderRadius: "0.4rem",
+            background: "linear-gradient(180deg, #1a2741, #0b1322)",
+            border: "1px solid rgba(46,230,255,0.5)",
+            color: "#cdeeff",
+            padding: "0.55rem 1.2rem",
+            fontSize: "0.8125rem",
             fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
             cursor: "pointer",
-            boxShadow: "0 0 22px -4px rgba(255,46,151,0.8)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), 0 0 22px -6px rgba(46,230,255,0.85)",
+            textShadow: "0 0 8px rgba(46,230,255,0.55)",
           }}
         >
           Try again

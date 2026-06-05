@@ -29,7 +29,7 @@ export function NavLink({
       aria-current={active ? "page" : undefined}
       className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
         active
-          ? "bg-neon-pink/10 text-neon-pink text-glow-sm ring-1 ring-inset ring-neon-pink/40"
+          ? "bg-neon-cyan/10 text-neon-cyan text-glow-sm ring-1 ring-inset ring-neon-cyan/40"
           : "text-ink-muted hover:bg-white/5 hover:text-neon-cyan"
       }`}
     >

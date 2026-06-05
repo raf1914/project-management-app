@@ -24,9 +24,9 @@ export const STATUS_META: Record<
   },
   "in-progress": {
     label: "In Progress",
-    badge: "bg-neon-pink/10 text-neon-pink ring-neon-pink/40 text-glow-sm",
-    dot: "bg-neon-pink text-neon-pink",
-    column: "border-t-neon-pink",
+    badge: "bg-neon-orange/10 text-neon-orange ring-neon-orange/40 text-glow-sm",
+    dot: "bg-neon-orange text-neon-orange",
+    column: "border-t-neon-orange",
   },
   done: {
     label: "Done",
