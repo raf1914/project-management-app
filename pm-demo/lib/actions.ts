@@ -2,7 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { db, nextId } from "./store";
+import { db, HOURS_BY_PRIORITY, nextId } from "./store";
+
+/** Default billable-hour budget applied to a newly created project. */
+const DEFAULT_BUDGET_HOURS = 40;
 import { PROJECT_COLORS } from "./ui";
 import type {
   Priority,
@@ -64,6 +67,7 @@ export async function createProject(
     description: str(formData, "description"),
     status: "active",
     color,
+    budgetHours: DEFAULT_BUDGET_HOURS,
     createdAt: new Date().toISOString(),
   });
 
@@ -106,6 +110,7 @@ export async function createTask(
   const priorityInput = str(formData, "priority") as Priority;
   const statusInput = str(formData, "status") as TaskStatus;
   const dueDate = str(formData, "dueDate");
+  const priority = PRIORITIES.includes(priorityInput) ? priorityInput : "medium";
 
   const task: Task = {
     id: nextId("t"),
@@ -113,7 +118,8 @@ export async function createTask(
     title,
     description: str(formData, "description"),
     status: TASK_STATUSES.includes(statusInput) ? statusInput : "todo",
-    priority: PRIORITIES.includes(priorityInput) ? priorityInput : "medium",
+    priority,
+    estimateHours: HOURS_BY_PRIORITY[priority],
     assignee: str(formData, "assignee", 80) || "Unassigned",
     dueDate: dueDate || null,
     createdAt: new Date().toISOString(),

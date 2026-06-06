@@ -14,6 +14,8 @@ export interface Project {
   status: ProjectStatus;
   /** Tailwind-friendly accent color name used for the project badge/avatar. */
   color: ProjectColor;
+  /** Billable-hour budget for the project. */
+  budgetHours: number;
   createdAt: string; // ISO timestamp
 }
 
@@ -25,6 +27,8 @@ export interface Task {
   status: TaskStatus;
   priority: Priority;
   assignee: string;
+  /** Estimated billable hours for this task. */
+  estimateHours: number;
   dueDate: string | null; // ISO date (yyyy-mm-dd) or null
   createdAt: string; // ISO timestamp
 }
@@ -54,4 +58,10 @@ export interface DashboardStats {
   doneCount: number;
   overdueCount: number;
   completionRate: number; // 0–100 across all tasks
+  /** Total estimated billable hours across all tasks (full projected scope). */
+  projectedHours: number;
+  /** Billable hours already delivered (sum of done tasks' estimates). */
+  currentHours: number;
+  /** Projects whose committed hours exceed their budget. */
+  overBudgetCount: number;
 }

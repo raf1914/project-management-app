@@ -78,6 +78,20 @@ export const getDashboardStats = cache(async (): Promise<DashboardStats> => {
 
   const doneCount = tasks.filter((t) => t.status === "done").length;
 
+  // Billable-hour rollups: projected = whole scope, current = delivered (done).
+  const projectedHours = tasks.reduce((sum, t) => sum + t.estimateHours, 0);
+  const currentHours = tasks
+    .filter((t) => t.status === "done")
+    .reduce((sum, t) => sum + t.estimateHours, 0);
+
+  // A project is over budget when its committed task hours exceed its budget.
+  const overBudgetCount = projects.filter((p) => {
+    const committed = tasks
+      .filter((t) => t.projectId === p.id)
+      .reduce((sum, t) => sum + t.estimateHours, 0);
+    return committed > p.budgetHours;
+  }).length;
+
   return {
     projectCount: projects.length,
     activeProjectCount: projects.filter((p) => p.status === "active").length,
@@ -91,5 +105,8 @@ export const getDashboardStats = cache(async (): Promise<DashboardStats> => {
     completionRate: tasks.length
       ? Math.round((doneCount / tasks.length) * 100)
       : 0,
+    projectedHours,
+    currentHours,
+    overBudgetCount,
   };
 });

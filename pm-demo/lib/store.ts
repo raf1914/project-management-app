@@ -1,4 +1,11 @@
-import type { Project, Task } from "./types";
+import type { Priority, Project, Task } from "./types";
+
+/** Default billable-hour estimate per task priority. */
+export const HOURS_BY_PRIORITY: Record<Priority, number> = {
+  low: 6,
+  medium: 12,
+  high: 20,
+};
 
 /**
  * In-memory data store.
@@ -32,6 +39,7 @@ function seed(): Database {
         "Refresh the marketing site with a new design system and faster pages.",
       status: "active",
       color: "indigo",
+      budgetHours: 70,
       createdAt: "2026-05-04T09:00:00.000Z",
     },
     {
@@ -41,6 +49,7 @@ function seed(): Database {
         "Ship the next major version of the mobile app with offline support.",
       status: "active",
       color: "emerald",
+      budgetHours: 64,
       createdAt: "2026-05-12T09:00:00.000Z",
     },
     {
@@ -49,6 +58,7 @@ function seed(): Database {
       description: "Plan and execute the Q3 product launch campaign.",
       status: "on-hold",
       color: "amber",
+      budgetHours: 40,
       createdAt: "2026-05-20T09:00:00.000Z",
     },
   ];
@@ -92,6 +102,7 @@ function task(
     status,
     priority,
     assignee,
+    estimateHours: HOURS_BY_PRIORITY[priority],
     dueDate,
     createdAt: "2026-05-04T09:00:00.000Z",
   };

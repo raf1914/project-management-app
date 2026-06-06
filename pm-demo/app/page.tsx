@@ -1,14 +1,16 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { getDashboardStats, getProjects } from "@/lib/data";
 import { Badge, EmptyState, ProgressBar } from "@/components/ui";
 import { PROJECT_COLOR_META, PROJECT_STATUS_META } from "@/lib/ui";
 import {
-  AlertIcon,
   ArrowRightIcon,
   CheckIcon,
   ClockIcon,
+  FireIcon,
   FolderIcon,
   PlusIcon,
+  TrendingUpIcon,
 } from "@/components/icons";
 
 // In-memory data is mutated by Server Actions, so always render fresh.
@@ -43,13 +45,6 @@ export default async function DashboardPage() {
       icon: <CheckIcon width={18} height={18} />,
       tone: "text-neon-green",
     },
-    {
-      label: "Overdue",
-      value: stats.overdueCount,
-      hint: "past due date",
-      icon: <AlertIcon width={18} height={18} />,
-      tone: "text-neon-red",
-    },
   ];
 
   return (
@@ -78,8 +73,8 @@ export default async function DashboardPage() {
 
       {/* ===== Console grid: wide completion + tall telemetry + mission list ===== */}
       <div className="grid gap-5 lg:grid-cols-3">
-        {/* Completion — the single hero metric (wide) */}
-        <section className="panel flex flex-col justify-center p-6 lg:col-span-2">
+        {/* Completion + key billing / risk metrics (wide) */}
+        <section className="panel p-6 lg:col-span-2">
           <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted">
             Overall Completion
           </h2>
@@ -91,6 +86,32 @@ export default async function DashboardPage() {
             <ProgressBar
               value={stats.completionRate}
               barClass="bg-neon-green text-neon-green"
+            />
+          </div>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <MetricTile
+              icon={<TrendingUpIcon width={16} height={16} />}
+              value={`${stats.projectedHours}h`}
+              label="Projected billable"
+              tone="text-neon-cyan"
+            />
+            <MetricTile
+              icon={<CheckIcon width={16} height={16} />}
+              value={`${stats.currentHours}h`}
+              label="Current billable"
+              tone="text-neon-green"
+            />
+            <MetricTile
+              icon={<ClockIcon width={16} height={16} />}
+              value={stats.overdueCount}
+              label="Overdue"
+              tone="text-neon-orange"
+            />
+            <MetricTile
+              icon={<FireIcon width={16} height={16} />}
+              value={stats.overBudgetCount}
+              label="Over budget"
+              tone="text-neon-red"
             />
           </div>
         </section>
@@ -200,6 +221,31 @@ export default async function DashboardPage() {
           )}
         </section>
       </div>
+    </div>
+  );
+}
+
+/** Compact KPI tile (billing / risk) shown under the completion bar. */
+function MetricTile({
+  icon,
+  value,
+  label,
+  tone,
+}: {
+  icon: ReactNode;
+  value: ReactNode;
+  label: string;
+  tone: string;
+}) {
+  return (
+    <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3">
+      <span className={tone}>{icon}</span>
+      <p className={`mt-1.5 font-display text-2xl font-bold leading-none ${tone}`}>
+        {value}
+      </p>
+      <p className="mt-1 text-[10px] uppercase tracking-wider text-ink-muted">
+        {label}
+      </p>
     </div>
   );
 }

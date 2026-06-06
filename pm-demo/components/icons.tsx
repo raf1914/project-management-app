@@ -101,3 +101,19 @@ export function TrashIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function FireIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+    </svg>
+  );
+}
+
+export function TrendingUpIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M3 17l6-6 4 4 8-8M15 7h6v6" />
+    </svg>
+  );
+}
