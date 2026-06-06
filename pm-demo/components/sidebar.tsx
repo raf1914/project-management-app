@@ -5,7 +5,7 @@
 
 import Link from "next/link";
 import { NavLink } from "./nav-link";
-import { DashboardIcon, FolderIcon, PlusIcon } from "./icons";
+import { BookIcon, DashboardIcon, FolderIcon, PlusIcon } from "./icons";
 
 export function Sidebar() {
   return (
@@ -32,6 +32,10 @@ export function Sidebar() {
         <NavLink href="/projects">
           <FolderIcon width={18} height={18} />
           Projects
+        </NavLink>
+        <NavLink href="/learn">
+          <BookIcon width={18} height={18} />
+          Learn
         </NavLink>
       </nav>
 
