@@ -65,20 +65,32 @@ function seed(): Database {
 
   const tasks: Task[] = [
     // Website Redesign
-    task("p-1", "Audit current pages", "done", "medium", "Dana", "2026-05-10"),
-    task("p-1", "Define design tokens", "done", "high", "Dana", "2026-05-18"),
-    task("p-1", "Build component library", "in-progress", "high", "Mateo", "2026-06-10"),
-    task("p-1", "Migrate landing page", "in-progress", "medium", "Mateo", "2026-06-14"),
-    task("p-1", "Set up analytics", "todo", "low", "Priya", "2026-06-20"),
-    task("p-1", "Accessibility review", "todo", "medium", "Priya", "2026-05-30"),
+    task("p-1", "Audit current pages", "done", "medium", "Dana", "2026-05-10",
+      "Survey all existing marketing pages and document layout patterns, performance issues, and content gaps."),
+    task("p-1", "Define design tokens", "done", "high", "Dana", "2026-05-18",
+      "Establish the color, typography, spacing, and shadow tokens that will drive the new design system."),
+    task("p-1", "Build component library", "in-progress", "high", "Mateo", "2026-06-10",
+      "Implement core UI components — buttons, cards, inputs, badges — using the new design tokens."),
+    task("p-1", "Migrate landing page", "in-progress", "medium", "Mateo", "2026-06-14",
+      "Port the existing landing page to use the component library and optimize for Core Web Vitals."),
+    task("p-1", "Set up analytics", "todo", "low", "Priya", "2026-06-20",
+      "Integrate analytics tracking with event capture for page views, CTAs, and conversion funnels."),
+    task("p-1", "Accessibility review", "todo", "medium", "Priya", "2026-05-30",
+      "Audit all migrated pages against WCAG 2.1 AA criteria and resolve any issues found."),
     // Mobile App v2
-    task("p-2", "Offline data sync spike", "done", "high", "Sam", "2026-05-22"),
-    task("p-2", "Redesign onboarding flow", "in-progress", "high", "Lena", "2026-06-08"),
-    task("p-2", "Implement push notifications", "todo", "medium", "Sam", "2026-06-25"),
-    task("p-2", "Beta release checklist", "todo", "low", "Lena", "2026-07-01"),
+    task("p-2", "Offline data sync spike", "done", "high", "Sam", "2026-05-22",
+      "Prototype a local-first sync approach to determine the best offline strategy for the app."),
+    task("p-2", "Redesign onboarding flow", "in-progress", "high", "Lena", "2026-06-08",
+      "Simplify the new-user experience from sign-up through first meaningful action to under 3 steps."),
+    task("p-2", "Implement push notifications", "todo", "medium", "Sam", "2026-06-25",
+      "Add device-level push notification support with opt-in prompt and per-category preference management."),
+    task("p-2", "Beta release checklist", "todo", "low", "Lena", "2026-07-01",
+      "Compile and sign off on QA checklist, app store assets, and staged rollout plan for the beta."),
     // Q3 Marketing Launch
-    task("p-3", "Draft launch messaging", "todo", "high", "Priya", "2026-06-15"),
-    task("p-3", "Coordinate with design", "todo", "medium", "Dana", null),
+    task("p-3", "Draft launch messaging", "todo", "high", "Priya", "2026-06-15",
+      "Write the core value proposition, taglines, and channel-specific copy for the Q3 campaign."),
+    task("p-3", "Coordinate with design", "todo", "medium", "Dana", null,
+      "Align with the design team on visual assets, brand guidelines, and approval workflow for campaign materials."),
   ];
 
   return { projects, tasks, counter: 0 };
@@ -92,13 +104,14 @@ function task(
   priority: Task["priority"],
   assignee: string,
   dueDate: string | null,
+  description = "",
 ): Task {
   _seedCounter += 1;
   return {
     id: `t-${_seedCounter}`,
     projectId,
     title,
-    description: "",
+    description,
     status,
     priority,
     assignee,

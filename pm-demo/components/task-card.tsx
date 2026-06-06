@@ -4,7 +4,7 @@ import { PRIORITY_META, STATUS_META, nextStatus, prevStatus } from "@/lib/ui";
 import type { Task } from "@/lib/types";
 import { Avatar, Badge } from "./ui";
 import { ConfirmButton, SubmitButton } from "./form-buttons";
-import { ArrowLeftIcon, ArrowRightIcon, TrashIcon } from "./icons";
+import { ArrowLeftIcon, ArrowRightIcon, ClockIcon, TrashIcon } from "./icons";
 
 /**
  * A single task on the kanban board. Status moves and deletion are plain forms
@@ -35,15 +35,21 @@ export function TaskCard({ task }: { task: Task }) {
       <div className="mt-3 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-xs text-ink-muted">
           <Avatar name={task.assignee} />
+          <span>{task.assignee}</span>
           {task.dueDate && (
-            <span className={overdue ? "font-semibold text-neon-red text-glow-sm" : ""}>
-              {overdue ? "Overdue · " : "Due "}
+            <span className={`flex items-center gap-0.5 ${overdue ? "font-semibold text-neon-red text-glow-sm" : ""}`}>
+              <span className="text-ink-muted/50">·</span>
+              {overdue ? "Overdue " : "Due "}
               {formatDate(task.dueDate)}
             </span>
           )}
         </div>
 
         <div className="flex items-center gap-1">
+          <span className="flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-medium text-ink-muted/70 ring-1 ring-inset ring-white/10">
+            <ClockIcon width={10} height={10} />
+            {task.estimateHours}h
+          </span>
           {prev && (
             <form action={setTaskStatus.bind(null, task.id, prev)}>
               <SubmitButton
