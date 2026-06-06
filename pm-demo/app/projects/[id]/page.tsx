@@ -11,6 +11,7 @@ import {
 } from "@/lib/ui";
 import { KanbanBoard } from "@/components/kanban";
 import { ProjectCompletionSection } from "@/components/project-completion-section";
+import { ProjectAvatar } from "@/components/project-avatar";
 import { Badge } from "@/components/ui";
 import { ConfirmButton } from "@/components/form-buttons";
 import { TrashIcon } from "@/components/icons";
@@ -58,12 +59,12 @@ export default async function ProjectDetailPage({ params }: Props) {
       {/* Command strip: identity + project actions */}
       <header className="panel flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-start gap-4">
-          <span
-            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-base font-bold text-glow-sm ring-1 ring-inset ring-white/10 ${color.bg} ${color.text}`}
-            aria-hidden
-          >
-            {project.name.slice(0, 2).toUpperCase()}
-          </span>
+          <ProjectAvatar
+            color={project.color}
+            progress={progress}
+            overdueCount={overdueCount}
+            size="lg"
+          />
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="break-words font-display text-2xl font-bold leading-none tracking-wide holo-text">

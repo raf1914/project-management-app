@@ -3,6 +3,7 @@ import { PROJECT_COLOR_META, PROJECT_STATUS_META } from "@/lib/ui";
 import type { ProjectWithStats } from "@/lib/types";
 import { Badge, ProgressBar } from "./ui";
 import { ArrowRightIcon } from "./icons";
+import { ProjectAvatar } from "./project-avatar";
 
 /**
  * A clickable project "mission row" — the shared list item used by the
@@ -16,16 +17,12 @@ export function ProjectRow({ project }: { project: ProjectWithStats }) {
       href={`/projects/${project.id}`}
       className="group flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-white/[0.03]"
     >
-      <span
-        className={`h-9 w-1 shrink-0 rounded-full ${color.bar}`}
-        aria-hidden
+      <ProjectAvatar
+        color={project.color}
+        progress={project.progress}
+        overdueCount={project.overdueCount}
+        size="sm"
       />
-      <span
-        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-xs font-bold text-glow-sm ring-1 ring-inset ring-white/10 ${color.bg} ${color.text}`}
-        aria-hidden
-      >
-        {project.name.slice(0, 2).toUpperCase()}
-      </span>
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium text-ink transition-colors group-hover:text-neon-cyan">
           {project.name}

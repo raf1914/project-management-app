@@ -47,6 +47,8 @@ export interface ProjectWithStats extends Project {
   doneCount: number;
   /** Percentage of tasks completed, 0–100. */
   progress: number;
+  /** Number of non-done tasks whose due date is in the past. */
+  overdueCount: number;
 }
 
 export interface DashboardStats {

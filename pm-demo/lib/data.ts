@@ -25,6 +25,7 @@ function progressOf(tasks: Task[]): number {
 }
 
 export const getProjects = cache(async (): Promise<ProjectWithStats[]> => {
+  const today = todayLocal();
   return db.projects
     .map((project) => {
       const tasks = db.tasks.filter((t) => t.projectId === project.id);
@@ -33,6 +34,9 @@ export const getProjects = cache(async (): Promise<ProjectWithStats[]> => {
         taskCount: tasks.length,
         doneCount: tasks.filter((t) => t.status === "done").length,
         progress: progressOf(tasks),
+        overdueCount: tasks.filter(
+          (t) => t.status !== "done" && t.dueDate !== null && t.dueDate < today,
+        ).length,
       };
     })
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));

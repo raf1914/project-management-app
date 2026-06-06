@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { formatDate } from "@/lib/format";
-import { PROJECT_COLOR_META, PROJECT_STATUS_META } from "@/lib/ui";
+import { PROJECT_STATUS_META } from "@/lib/ui";
 import type { ProjectWithStats } from "@/lib/types";
 import { Badge, ProgressBar } from "./ui";
 import { CheckIcon, ListIcon } from "./icons";
+import { ProjectAvatar } from "./project-avatar";
 
 export function ProjectCard({ project }: { project: ProjectWithStats }) {
-  const color = PROJECT_COLOR_META[project.color];
   const status = PROJECT_STATUS_META[project.status];
 
   return (
@@ -16,12 +16,12 @@ export function ProjectCard({ project }: { project: ProjectWithStats }) {
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <span
-            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold ring-1 ring-inset ring-white/10 text-glow-sm ${color.bg} ${color.text}`}
-            aria-hidden
-          >
-            {project.name.slice(0, 2).toUpperCase()}
-          </span>
+          <ProjectAvatar
+            color={project.color}
+            progress={project.progress}
+            overdueCount={project.overdueCount}
+            size="md"
+          />
           <h3 className="min-w-0 break-words font-semibold text-ink transition-colors group-hover:text-neon-cyan group-hover:text-glow-sm">
             {project.name}
           </h3>
