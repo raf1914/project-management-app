@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * @file NewProjectForm component — a controlled form bound to the createProject
+ * Server Action with name, description, and accent-color fields.
+ */
+
 import { useActionState } from "react";
 import { createProject, type FormState } from "@/lib/actions";
 import { PROJECT_COLORS, PROJECT_COLOR_META } from "@/lib/ui";

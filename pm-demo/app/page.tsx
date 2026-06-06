@@ -1,3 +1,8 @@
+/**
+ * @file Dashboard page — the root route that displays overall completion stats,
+ * system-status telemetry, and a list of recent projects.
+ */
+
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { getDashboardStats, getProjects } from "@/lib/data";
@@ -14,7 +19,7 @@ import {
   TrendingUpIcon,
 } from "@/components/icons";
 
-// In-memory data is mutated by Server Actions, so always render fresh.
+//* In-memory data is mutated by Server Actions, so always render fresh.
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {

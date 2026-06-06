@@ -1,5 +1,10 @@
-// Minimal inline SVG icons so the app stays dependency-free.
-// Each accepts standard SVG props (className, etc.).
+/**
+ * @file Minimal inline SVG icon components that keep the app dependency-free;
+ * each accepts standard SVG props such as className, width, and height.
+ */
+
+//* Minimal inline SVG icons so the app stays dependency-free.
+//* Each accepts standard SVG props (className, etc.).
 
 type IconProps = React.SVGProps<SVGSVGElement>;
 

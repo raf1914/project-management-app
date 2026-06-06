@@ -1,3 +1,8 @@
+/**
+ * @file StatCard component that renders a labelled KPI panel with an icon,
+ * large value, and optional hint text.
+ */
+
 import type { ReactNode } from "react";
 
 export function StatCard({

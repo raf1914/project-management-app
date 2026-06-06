@@ -1,12 +1,18 @@
+/**
+ * @file ProjectCard component — a grid card linking to a project detail page,
+ * showing avatar, status badge, progress bar, and task counts.
+ */
+
 import Link from "next/link";
 import { formatDate } from "@/lib/format";
-import { PROJECT_STATUS_META } from "@/lib/ui";
+import { PROJECT_COLOR_META, PROJECT_STATUS_META } from "@/lib/ui";
 import type { ProjectWithStats } from "@/lib/types";
 import { Badge, ProgressBar } from "./ui";
 import { CheckIcon, ListIcon } from "./icons";
 import { ProjectAvatar } from "./project-avatar";
 
 export function ProjectCard({ project }: { project: ProjectWithStats }) {
+  const color = PROJECT_COLOR_META[project.color];
   const status = PROJECT_STATUS_META[project.status];
 
   return (

@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * @file NavLink component that highlights itself when its href matches the
+ * current route, using Next.js's usePathname client hook.
+ */
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";

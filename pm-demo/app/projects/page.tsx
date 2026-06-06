@@ -1,3 +1,8 @@
+/**
+ * @file Projects listing page that groups all projects by status and renders
+ * each group as a collapsible panel with roll-up task stats.
+ */
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getProjects } from "@/lib/data";
@@ -37,8 +42,8 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
   const activeCount = projects.filter((p) => p.status === "active").length;
 
-  // Group projects by status, preserving the canonical status order and the
-  // createdAt sort already applied by getProjects().
+  //* Group projects by status, preserving the canonical status order and the
+  //* createdAt sort already applied by getProjects().
   const groups = PROJECT_STATUSES.map((status) => ({
     status,
     items: projects.filter((p) => p.status === status),
@@ -101,7 +106,7 @@ function StatusGroup({
   const accent = GROUP_ACCENT[status];
   const meta = PROJECT_STATUS_META[status];
 
-  // Aggregate roll-ups for the group, shown in the header.
+  //* Aggregate roll-ups for the group, shown in the header.
   const taskTotal = items.reduce((sum, p) => sum + p.taskCount, 0);
   const doneTotal = items.reduce((sum, p) => sum + p.doneCount, 0);
   const avgProgress = Math.round(

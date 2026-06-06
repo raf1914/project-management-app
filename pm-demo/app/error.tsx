@@ -1,4 +1,9 @@
-"use client"; // Error boundaries must be Client Components.
+"use client"; //* Error boundaries must be Client Components.
+
+/**
+ * @file Route-segment error boundary that catches render errors and offers a
+ * retry action using Next.js's reset or unstable_retry recovery prop.
+ */
 
 import { useEffect } from "react";
 
@@ -17,7 +22,7 @@ export default function Error({
   unstable_retry?: () => void;
 }) {
   useEffect(() => {
-    // Report to your error-tracking service here.
+    //* Report to your error-tracking service here.
     console.error(error);
   }, [error]);
 

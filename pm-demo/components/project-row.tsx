@@ -1,3 +1,8 @@
+/**
+ * @file ProjectRow component — a clickable list-item used by the dashboard
+ * and Projects page to display a project's avatar, progress bar, and status badge.
+ */
+
 import Link from "next/link";
 import { PROJECT_COLOR_META, PROJECT_STATUS_META } from "@/lib/ui";
 import type { ProjectWithStats } from "@/lib/types";

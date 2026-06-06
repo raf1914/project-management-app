@@ -1,3 +1,8 @@
+/**
+ * @file Root layout that loads Google fonts (Geist, Orbitron), applies global
+ * CSS, and wraps every page in the Sidebar + main content shell.
+ */
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Orbitron } from "next/font/google";
 import "./globals.css";
@@ -13,7 +18,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Retro display face for headings / the logo — the "tech" in 80s retro-tech.
+//* Retro display face for headings / the logo — the "tech" in 80s retro-tech.
 const orbitron = Orbitron({
   variable: "--font-orbitron",
   subsets: ["latin"],

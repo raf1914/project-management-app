@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * @file ProjectCompletionSection client component that shows overall completion,
+ * billing/risk metric tiles, and a collapsible inline add-task form.
+ */
+
 import { useState } from "react";
 import { NewTaskForm } from "./new-task-form";
 import { MetricTile } from "./metric-tile";

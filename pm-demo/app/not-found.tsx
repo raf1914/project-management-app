@@ -1,3 +1,8 @@
+/**
+ * @file 404 Not Found page displayed when Next.js cannot match a route or when
+ * notFound() is called from a server component.
+ */
+
 import Link from "next/link";
 
 export default function NotFound() {

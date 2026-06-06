@@ -1,3 +1,8 @@
+/**
+ * @file ProjectAvatar component that renders a project's initials inside a
+ * circular SVG progress ring with an optional overdue-task badge.
+ */
+
 import { PROJECT_COLOR_META } from "@/lib/ui";
 import type { ProjectColor } from "@/lib/types";
 

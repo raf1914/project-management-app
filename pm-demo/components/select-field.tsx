@@ -1,15 +1,16 @@
 "use client";
 
+/**
+ * @file Themed replacement for a native <select>. Portals its dropdown to
+ *       document.body so it escapes any overflow:hidden ancestor.
+ *       Pass searchable for a filter input.
+ */
+
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDownIcon, CheckIcon } from "./icons";
 
 export type SelectOption = { value: string; label: string };
-
-/**
- * Themed replacement for a native <select>. Portals its dropdown to document.body
- * so it escapes any overflow:hidden ancestor. Pass searchable for a filter input.
- */
 export function SelectField({
   name,
   options,

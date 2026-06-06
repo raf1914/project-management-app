@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * @file NewTaskForm client component — an inline add-task form that uses
+ * useActionState for pending/error feedback and resets after a successful submit.
+ */
+
 import { useActionState, useEffect, useRef, useState } from "react";
 import { createTask, type FormState } from "@/lib/actions";
 import { CheckIcon, AlertIcon } from "./icons";
@@ -40,8 +45,8 @@ export function NewTaskForm({
   );
   const formRef = useRef<HTMLFormElement>(null);
   const [title, setTitle] = useState("");
-  // The custom Select/Date fields hold their own state, so a native form.reset()
-  // won't clear them. Bumping this key remounts them back to their defaults.
+  //* The custom Select/Date fields hold their own state, so a native form.reset()
+  //* won't clear them. Bumping this key remounts them back to their defaults.
   const [resetKey, setResetKey] = useState(0);
 
   function resetForm() {

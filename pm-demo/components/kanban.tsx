@@ -1,3 +1,8 @@
+/**
+ * @file Kanban board and column components. The board renders three columns
+ *       (To Do / In Progress / Done) driven by TASK_STATUSES order.
+ */
+
 import { STATUS_META, TASK_STATUSES } from "@/lib/ui";
 import type { Task, TaskStatus } from "@/lib/types";
 import { TaskCard } from "./task-card";

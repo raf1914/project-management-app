@@ -1,3 +1,8 @@
+/**
+ * @file Small server-safe presentational primitives (Badge, ProgressBar, Avatar,
+ * EmptyState) shared across the application.
+ */
+
 import type { ReactNode } from "react";
 
 /** Small presentational primitives shared across the app (all server-safe). */

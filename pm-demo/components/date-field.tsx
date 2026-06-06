@@ -1,5 +1,15 @@
 "use client";
 
+/**
+ * @file Themed date picker. The native <input type="date"> calendar is browser
+ *       chrome that can't be styled, so we render our own calendar popover and
+ *       submit the value (yyyy-mm-dd) through a hidden input.
+ *
+ *       The popover is portaled to document.body so it escapes any overflow:hidden
+ *       ancestor, and uses position:fixed so viewport coords from
+ *       getBoundingClientRect apply directly.
+ */
+
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { formatDate, todayLocal } from "@/lib/format";

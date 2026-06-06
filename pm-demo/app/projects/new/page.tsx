@@ -1,3 +1,8 @@
+/**
+ * @file New Project page that renders a centered form for creating a project
+ * with a name, description, and accent color selection.
+ */
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { NewProjectForm } from "@/components/new-project-form";

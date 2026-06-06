@@ -1,4 +1,9 @@
-"use client"; // Error boundaries must be Client Components.
+"use client"; //* Error boundaries must be Client Components.
+
+/**
+ * @file Global error boundary that catches errors thrown by the root layout and
+ * renders its own full HTML document with an inline-styled retry button.
+ */
 
 import { useEffect } from "react";
 
@@ -26,16 +31,16 @@ export default function GlobalError({
   unstable_retry?: () => void;
 }) {
   useEffect(() => {
-    // Report to your error-tracking service here.
+    //* Report to your error-tracking service here.
     console.error(error);
   }, [error]);
 
   const retry = unstable_retry ?? reset ?? (() => {});
 
   return (
-    // global-error replaces the root layout, so it must render its own document.
-    // Styles are inline because the app's global CSS lives behind the (replaced)
-    // root layout.
+    //* global-error replaces the root layout, so it must render its own document.
+    //* Styles are inline because the app's global CSS lives behind the (replaced)
+    //* root layout.
     <html lang="en">
       <body
         style={{

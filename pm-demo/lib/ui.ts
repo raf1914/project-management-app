@@ -1,3 +1,8 @@
+/**
+ * @file Presentation metadata for the domain enums: labels and Tailwind class sets.
+ *       Pure constants/helpers — safe to import from both Server and Client Components.
+ */
+
 import type {
   Priority,
   ProjectColor,
@@ -5,11 +10,7 @@ import type {
   TaskStatus,
 } from "./types";
 
-/**
- * Presentation metadata for the domain enums: labels and Tailwind class sets.
- * Pure constants/helpers — safe to import from both Server and Client Components.
- */
-
+//* Canonical status order — drives column layout and advance/regress logic.
 export const TASK_STATUSES: TaskStatus[] = ["todo", "in-progress", "done"];
 
 export const STATUS_META: Record<
@@ -72,37 +73,31 @@ export const PROJECT_STATUS_META: Record<
   },
 };
 
+//* Color metadata keyed by project accent — bg, text, and progress-bar classes.
 export const PROJECT_COLOR_META: Record<
   ProjectColor,
   { bg: string; text: string; bar: string }
 > = {
   indigo: { bg: "bg-neon-purple/15", text: "text-neon-purple", bar: "bg-neon-purple" },
-  emerald: { bg: "bg-neon-green/15", text: "text-neon-green", bar: "bg-neon-green" },
-  amber: { bg: "bg-neon-orange/15", text: "text-neon-orange", bar: "bg-neon-orange" },
-  rose: { bg: "bg-neon-pink/15", text: "text-neon-pink", bar: "bg-neon-pink" },
-  sky: { bg: "bg-neon-cyan/15", text: "text-neon-cyan", bar: "bg-neon-cyan" },
-  violet: { bg: "bg-neon-magenta/15", text: "text-neon-magenta", bar: "bg-neon-magenta" },
+  emerald: { bg: "bg-neon-green/15",  text: "text-neon-green",  bar: "bg-neon-green"  },
+  amber:   { bg: "bg-neon-orange/15", text: "text-neon-orange", bar: "bg-neon-orange" },
+  rose:    { bg: "bg-neon-pink/15",   text: "text-neon-pink",   bar: "bg-neon-pink"   },
+  sky:     { bg: "bg-neon-cyan/15",   text: "text-neon-cyan",   bar: "bg-neon-cyan"   },
+  violet:  { bg: "bg-neon-magenta/15",text: "text-neon-magenta",bar: "bg-neon-magenta"},
 };
 
-export const PROJECT_COLORS = Object.keys(
-  PROJECT_COLOR_META,
-) as ProjectColor[];
+export const PROJECT_COLORS = Object.keys(PROJECT_COLOR_META) as ProjectColor[];
 
-export const PROJECT_STATUSES: ProjectStatus[] = [
-  "active",
-  "on-hold",
-  "completed",
-];
+export const PROJECT_STATUSES: ProjectStatus[] = ["active", "on-hold", "completed"];
 
-/** The status a task moves to when advanced/regressed on the board. */
+//* The status a task advances to when moved right on the board, or null at the end.
 export function nextStatus(status: TaskStatus): TaskStatus | null {
-  const order = TASK_STATUSES;
-  const i = order.indexOf(status);
-  return i < order.length - 1 ? order[i + 1] : null;
+  const statusIndex = TASK_STATUSES.indexOf(status);
+  return statusIndex < TASK_STATUSES.length - 1 ? TASK_STATUSES[statusIndex + 1] : null;
 }
 
+//* The status a task regresses to when moved left on the board, or null at the start.
 export function prevStatus(status: TaskStatus): TaskStatus | null {
-  const order = TASK_STATUSES;
-  const i = order.indexOf(status);
-  return i > 0 ? order[i - 1] : null;
+  const statusIndex = TASK_STATUSES.indexOf(status);
+  return statusIndex > 0 ? TASK_STATUSES[statusIndex - 1] : null;
 }

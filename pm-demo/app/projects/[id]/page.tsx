@@ -1,3 +1,8 @@
+/**
+ * @file Project detail page showing the command strip, completion metrics,
+ * collapsible add-task form, and the full kanban board for a single project.
+ */
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -39,7 +44,7 @@ export default async function ProjectDetailPage({ params }: Props) {
   const progress = total ? Math.round((board.done.length / total) * 100) : 0;
   const color = PROJECT_COLOR_META[project.color];
 
-  // Per-project billing / risk, mirroring the dashboard.
+  //* Per-project billing / risk, mirroring the dashboard.
   const projectedHours = tasks.reduce((sum, t) => sum + t.estimateHours, 0);
   const currentHours = board.done.reduce((sum, t) => sum + t.estimateHours, 0);
   const overdueCount = tasks.filter(

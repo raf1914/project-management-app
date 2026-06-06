@@ -1,3 +1,8 @@
+/**
+ * @file Compact KPI tile used across the dashboard and project detail views to
+ * display billing and risk metrics.
+ */
+
 import type { ReactNode } from "react";
 
 /** Compact KPI tile (billing / risk metrics) shared across dashboard + detail. */

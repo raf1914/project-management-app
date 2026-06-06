@@ -1,3 +1,8 @@
+/**
+ * @file App shell sidebar with the Project Hub logo, navigation links, and a
+ * New Project shortcut button.
+ */
+
 import Link from "next/link";
 import { NavLink } from "./nav-link";
 import { DashboardIcon, FolderIcon, PlusIcon } from "./icons";

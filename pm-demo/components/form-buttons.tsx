@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * @file Reusable form button components (SubmitButton, ConfirmButton) wired to
+ * React's useFormStatus for progressive-enhancement pending states.
+ */
+
 import { useFormStatus } from "react-dom";
 import type { ReactNode } from "react";
 

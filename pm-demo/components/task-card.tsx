@@ -1,3 +1,8 @@
+/**
+ * @file TaskCard component that renders a single kanban task with priority
+ * badge, assignee, due date, status-move arrows, and a delete action.
+ */
+
 import { deleteTask, setTaskStatus } from "@/lib/actions";
 import { formatDate, isOverdue } from "@/lib/format";
 import { PRIORITY_META, STATUS_META, nextStatus, prevStatus } from "@/lib/ui";
