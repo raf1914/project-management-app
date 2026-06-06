@@ -79,7 +79,7 @@ export function NewProjectForm() {
         </p>
       )}
 
-      <div className="flex items-center gap-3 pt-1">
+      <div className="flex items-center justify-end gap-3 pt-1">
         <button type="submit" disabled={pending} className="btn-neon">
           {pending ? "Creating…" : "Create project"}
         </button>

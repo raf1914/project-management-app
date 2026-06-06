@@ -25,7 +25,13 @@ function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.Re
  * Inline "add task" form. Uses `useActionState` for the pending flag and
  * server-returned validation errors, and resets itself after a successful add.
  */
-export function NewTaskForm({ projectId }: { projectId: string }) {
+export function NewTaskForm({
+  projectId,
+  onSuccess,
+}: {
+  projectId: string;
+  onSuccess?: () => void;
+}) {
   const [state, formAction, pending] = useActionState<FormState, FormData>(
     createTask,
     null,
@@ -43,7 +49,10 @@ export function NewTaskForm({ projectId }: { projectId: string }) {
   }
 
   useEffect(() => {
-    if (state?.ok) resetForm();
+    if (state?.ok) {
+      resetForm();
+      onSuccess?.();
+    }
   }, [state]);
 
   const titleEmpty = title.trim().length === 0;

@@ -10,17 +10,10 @@ import {
   PROJECT_STATUS_META,
 } from "@/lib/ui";
 import { KanbanBoard } from "@/components/kanban";
-import { NewTaskForm } from "@/components/new-task-form";
-import { MetricTile } from "@/components/metric-tile";
-import { Badge, ProgressBar } from "@/components/ui";
+import { ProjectCompletionSection } from "@/components/project-completion-section";
+import { Badge } from "@/components/ui";
 import { ConfirmButton } from "@/components/form-buttons";
-import {
-  CheckIcon,
-  ClockIcon,
-  FireIcon,
-  TrashIcon,
-  TrendingUpIcon,
-} from "@/components/icons";
+import { TrashIcon } from "@/components/icons";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -122,51 +115,19 @@ export default async function ProjectDetailPage({ params }: Props) {
         </div>
       </header>
 
-      {/* Completion + per-project billing / risk */}
-      <section className="panel p-6">
-        <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted">
-          Overall Completion
-        </h2>
-        <p className="mt-2 font-display text-6xl font-bold leading-none holo-text">
-          {progress}
-          <span className="text-3xl">%</span>
-        </p>
-        <p className="mt-1.5 text-xs uppercase tracking-wider text-ink-muted">
-          {board.done.length}/{total} tasks
-        </p>
-        <div className="mt-5">
-          <ProgressBar value={progress} barClass={`${color.bar} ${color.text}`} />
-        </div>
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <MetricTile
-            icon={<TrendingUpIcon width={16} height={16} />}
-            value={`${projectedHours}h`}
-            label="Projected billable"
-            tone="text-neon-cyan"
-          />
-          <MetricTile
-            icon={<CheckIcon width={16} height={16} />}
-            value={`${currentHours}h`}
-            label="Current billable"
-            tone="text-neon-green"
-          />
-          <MetricTile
-            icon={<ClockIcon width={16} height={16} />}
-            value={overdueCount}
-            label="Overdue"
-            tone="text-neon-orange"
-          />
-          <MetricTile
-            icon={<FireIcon width={16} height={16} />}
-            value={`${projectedHours}/${project.budgetHours}h`}
-            label="Budget"
-            tone={overBudget ? "text-neon-red" : "text-neon-purple"}
-          />
-        </div>
-      </section>
-
-      {/* Add task */}
-      <NewTaskForm projectId={project.id} />
+      {/* Completion + per-project billing / risk + collapsible add-task form */}
+      <ProjectCompletionSection
+        projectId={project.id}
+        progress={progress}
+        doneCount={board.done.length}
+        total={total}
+        projectedHours={projectedHours}
+        currentHours={currentHours}
+        overdueCount={overdueCount}
+        overBudget={overBudget}
+        budgetHours={project.budgetHours}
+        barClass={`${color.bar} ${color.text}`}
+      />
 
       {/* Board */}
       <section className="space-y-3">
