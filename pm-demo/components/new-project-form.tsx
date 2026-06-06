@@ -7,7 +7,9 @@
 
 import { useActionState } from "react";
 import { createProject, type FormState } from "@/lib/actions";
-import { PROJECT_COLORS, PROJECT_COLOR_META } from "@/lib/ui";
+import { PROJECT_COLORS, PROJECT_COLOR_META, PROJECT_STATUSES, PROJECT_STATUS_META } from "@/lib/ui";
+import { SelectField } from "./select-field";
+import { SpinButtons } from "./spin-buttons";
 
 const field = "field";
 
@@ -52,6 +54,39 @@ export function NewProjectForm() {
           placeholder="What is this project about?"
           className={field}
         />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-ink-muted">
+            Status
+          </label>
+          <SelectField
+            name="status"
+            defaultValue="active"
+            options={PROJECT_STATUSES.map((s) => ({ value: s, label: PROJECT_STATUS_META[s].label }))}
+          />
+        </div>
+        <div>
+          <label htmlFor="budgetHours" className="mb-1.5 block text-sm font-medium text-ink-muted">
+            Budget hours
+          </label>
+          <div className="relative">
+            <input
+              id="budgetHours"
+              name="budgetHours"
+              type="number"
+              min={0}
+              step={1}
+              defaultValue={40}
+              className={`${field} pr-14 [appearance:textfield] [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden`}
+            />
+            <span className="pointer-events-none absolute inset-y-0 right-9 flex items-center text-xs font-medium text-ink-muted/80">
+              h
+            </span>
+            <SpinButtons inputId="budgetHours" />
+          </div>
+        </div>
       </div>
 
       <fieldset>

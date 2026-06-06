@@ -55,14 +55,20 @@ export async function createProject(
   const colorInput = str(formData, "color") as ProjectColor;
   const projectColor = PROJECT_COLORS.includes(colorInput) ? colorInput : "indigo";
 
+  const statusInput = str(formData, "status") as ProjectStatus;
+  const projectStatus = PROJECT_STATUSES.includes(statusInput) ? statusInput : "active";
+
+  const budgetInput = parseFloat(str(formData, "budgetHours"));
+  const budgetHours = budgetInput >= 0 ? budgetInput : DEFAULT_BUDGET_HOURS;
+
   const newProjectId = nextId("p");
   db.projects.push({
     id: newProjectId,
     name: projectName,
     description: str(formData, "description"),
-    status: "active",
+    status: projectStatus,
     color: projectColor,
-    budgetHours: DEFAULT_BUDGET_HOURS,
+    budgetHours,
     createdAt: new Date().toISOString(),
   });
 
@@ -108,6 +114,9 @@ export async function createTask(
   const dueDateInput  = str(formData, "dueDate");
   const taskPriority  = PRIORITIES.includes(priorityInput) ? priorityInput : "medium";
 
+  const estimateInput = parseFloat(str(formData, "estimateHours"));
+  const estimateHours = estimateInput > 0 ? estimateInput : HOURS_BY_PRIORITY[taskPriority];
+
   const newTask: Task = {
     id: nextId("t"),
     projectId,
@@ -115,7 +124,7 @@ export async function createTask(
     description: str(formData, "description"),
     status: TASK_STATUSES.includes(statusInput) ? statusInput : "todo",
     priority: taskPriority,
-    estimateHours: HOURS_BY_PRIORITY[taskPriority],
+    estimateHours,
     assignee: str(formData, "assignee", 80) || "Unassigned",
     dueDate: dueDateInput || null,
     createdAt: new Date().toISOString(),

@@ -37,7 +37,11 @@ export function TaskCard({ task }: { task: Task }) {
         </p>
       )}
 
-      <div className="mt-3 flex items-center justify-between gap-2">
+      <p className="mt-2 text-[10px] text-ink-muted/40">
+        Added {formatDate(task.createdAt)}
+      </p>
+
+      <div className="mt-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-xs text-ink-muted">
           <Avatar name={task.assignee} />
           <span>{task.assignee}</span>

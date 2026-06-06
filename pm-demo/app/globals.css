@@ -205,6 +205,7 @@ body::after {
     color: var(--color-ink);
   }
 
+
   /* Floating menu surface — shared by the custom select + date picker popovers.
      Fully opaque so list/calendar content never shows the page bleeding through;
      the blur + edge glow keep the glassy console look. */
@@ -294,6 +295,17 @@ body::after {
     background: rgba(47, 224, 219, 0.1);
     box-shadow: 0 0 18px -6px rgba(47, 224, 219, 0.7);
   }
+}
+
+/* Hide native number-input spinners unconditionally — custom SpinButtons used instead. */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 /* ---------------------------------------------------------------------------

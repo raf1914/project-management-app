@@ -7,9 +7,10 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { createTask, type FormState } from "@/lib/actions";
-import { CheckIcon, AlertIcon } from "./icons";
+import { CheckIcon, AlertIcon, ClockIcon } from "./icons";
 import { SelectField } from "./select-field";
 import { DateField } from "./date-field";
+import { SpinButtons } from "./spin-buttons";
 
 const field = "field";
 const TITLE_MAX = 200;
@@ -95,7 +96,7 @@ export function NewTaskForm({
           />
         </div>
 
-        <div className="sm:col-span-4">
+        <div className="sm:col-span-3">
           <FieldLabel htmlFor="task-assignee">Assignee</FieldLabel>
           <SelectField
             key={`assignee-${resetKey}`}
@@ -110,7 +111,7 @@ export function NewTaskForm({
             ]}
           />
         </div>
-        <div className="sm:col-span-3">
+        <div className="sm:col-span-2">
           <FieldLabel htmlFor="task-priority">Priority</FieldLabel>
           <SelectField
             key={`priority-${resetKey}`}
@@ -148,6 +149,31 @@ export function NewTaskForm({
             name="dueDate"
             aria-label="Due date"
           />
+        </div>
+        <div className="sm:col-span-2">
+          <FieldLabel htmlFor="task-estimate">Est. hours</FieldLabel>
+          <div className="relative">
+            <ClockIcon
+              width={12}
+              height={12}
+              className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-muted/50"
+            />
+            <input
+              key={`estimate-${resetKey}`}
+              id="task-estimate"
+              name="estimateHours"
+              type="number"
+              min={0}
+              step={0.5}
+              placeholder="Auto"
+              aria-label="Estimate hours"
+              className={`${field} pl-7 pr-14 [appearance:textfield] [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden`}
+            />
+            <span className="pointer-events-none absolute inset-y-0 right-9 flex items-center text-[11px] font-medium text-ink-muted/80">
+              h
+            </span>
+            <SpinButtons inputId="task-estimate" />
+          </div>
         </div>
 
         {/* Optional details. */}
