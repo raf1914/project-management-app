@@ -5,11 +5,13 @@ const R = 15;
 const C = 2 * Math.PI * R; // circumference ≈ 94.25
 
 export function ProjectAvatar({
+  name,
   color,
   progress,
   overdueCount = 0,
   size = "md",
 }: {
+  name: string;
   color: ProjectColor;
   progress: number;
   overdueCount?: number;
@@ -17,11 +19,14 @@ export function ProjectAvatar({
 }) {
   const meta = PROJECT_COLOR_META[color];
   const arc = (progress / 100) * C;
+  const initials = name.slice(0, 2).toUpperCase();
 
   const sizeClass =
     size === "sm" ? "h-9 w-9" : size === "lg" ? "h-12 w-12" : "h-10 w-10";
   const roundedClass =
     size === "sm" ? "rounded-md" : size === "lg" ? "rounded-xl" : "rounded-lg";
+  const textClass =
+    size === "sm" ? "text-[9px]" : size === "lg" ? "text-xs" : "text-[10px]";
 
   return (
     <span
@@ -56,6 +61,13 @@ export function ProjectAvatar({
           />
         )}
       </svg>
+
+      {/* Initials centered over the ring */}
+      <span
+        className={`absolute inset-0 flex items-center justify-center font-bold text-glow-sm ${meta.text} ${textClass}`}
+      >
+        {initials}
+      </span>
 
       {/* Overdue badge */}
       {overdueCount > 0 && (

@@ -60,6 +60,7 @@ export default async function ProjectDetailPage({ params }: Props) {
       <header className="panel flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-start gap-4">
           <ProjectAvatar
+            name={project.name}
             color={project.color}
             progress={progress}
             overdueCount={overdueCount}

@@ -18,6 +18,7 @@ export function ProjectRow({ project }: { project: ProjectWithStats }) {
       className="group flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-white/[0.03]"
     >
       <ProjectAvatar
+        name={project.name}
         color={project.color}
         progress={project.progress}
         overdueCount={project.overdueCount}

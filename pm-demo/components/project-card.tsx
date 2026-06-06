@@ -17,6 +17,7 @@ export function ProjectCard({ project }: { project: ProjectWithStats }) {
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <ProjectAvatar
+            name={project.name}
             color={project.color}
             progress={project.progress}
             overdueCount={project.overdueCount}
