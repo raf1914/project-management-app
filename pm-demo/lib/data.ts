@@ -15,6 +15,7 @@ import type {
   ProjectWithStats,
   Task,
   TaskStatus,
+  TimeLog,
 } from "./types";
 
 //* Derive a 0-100 completion percentage from a task list.
@@ -65,6 +66,13 @@ export const getComments = cache(async function getComments(taskId: string): Pro
   return db.comments
     .filter((c) => c.taskId === taskId)
     .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+});
+
+//* Time log entries for a task, sorted oldest-first.
+export const getTimeLogs = cache(async function getTimeLogs(taskId: string): Promise<TimeLog[]> {
+  return db.timeLogs
+    .filter((tl) => tl.taskId === taskId)
+    .sort((a, b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt));
 });
 
 //* Unique, sorted list of assignee names across all tasks (excludes "Unassigned").

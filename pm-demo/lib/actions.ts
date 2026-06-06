@@ -184,8 +184,9 @@ export async function updateTask(
 }
 
 export async function deleteTaskAndRedirect(id: string, projectId: string) {
-  db.tasks = db.tasks.filter((t) => t.id !== id);
+  db.tasks    = db.tasks.filter((t) => t.id !== id);
   db.comments = db.comments.filter((c) => c.taskId !== id);
+  db.timeLogs = db.timeLogs.filter((tl) => tl.taskId !== id);
   refreshLists();
   redirect(`/projects/${projectId}`);
 }
@@ -221,5 +222,44 @@ export async function addComment(
 
 export async function deleteComment(id: string, taskId: string, projectId: string) {
   db.comments = db.comments.filter((c) => c.id !== id);
+  revalidatePath(`/projects/${projectId}/tasks/${taskId}`);
+}
+
+// ---------------------------------------------------------------------------
+// Time logs
+// ---------------------------------------------------------------------------
+
+export async function logTime(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const taskId = str(formData, "taskId");
+  const task = db.tasks.find((t) => t.id === taskId);
+  if (!task) return { error: "Task not found." };
+
+  const hoursInput = parseFloat(str(formData, "hours"));
+  if (!hoursInput || hoursInput <= 0) return { error: "Hours must be greater than 0." };
+  if (hoursInput > 24) return { error: "Cannot log more than 24 hours in a single entry." };
+
+  const author = str(formData, "author", 80) || "Unknown";
+  const date   = str(formData, "date") || new Date().toISOString().slice(0, 10);
+  const note   = str(formData, "note", 300);
+
+  db.timeLogs.push({
+    id: nextId("tl"),
+    taskId,
+    author,
+    hours: Math.round(hoursInput * 4) / 4, // round to nearest 0.25
+    date,
+    note,
+    createdAt: new Date().toISOString(),
+  });
+
+  revalidatePath(`/projects/${task.projectId}/tasks/${taskId}`);
+  return { ok: true };
+}
+
+export async function deleteTimeLog(id: string, taskId: string, projectId: string) {
+  db.timeLogs = db.timeLogs.filter((tl) => tl.id !== id);
   revalidatePath(`/projects/${projectId}/tasks/${taskId}`);
 }

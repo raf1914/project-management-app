@@ -59,6 +59,16 @@ export interface Comment {
   createdAt: string; // ISO timestamp
 }
 
+export interface TimeLog {
+  id: string;
+  taskId: string;
+  author: string;
+  hours: number;
+  date: string;      // ISO date yyyy-mm-dd
+  note: string;
+  createdAt: string; // ISO timestamp
+}
+
 export interface DashboardStats {
   projectCount: number;
   activeProjectCount: number;

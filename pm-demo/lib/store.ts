@@ -10,7 +10,7 @@
  *       Replacement during `next dev`. Resets when the server process restarts.
  */
 
-import type { Comment, Priority, Project, Task } from "./types";
+import type { Comment, Priority, Project, Task, TimeLog } from "./types";
 
 //* Default billable-hour estimate per task priority.
 export const HOURS_BY_PRIORITY: Record<Priority, number> = {
@@ -23,6 +23,7 @@ interface Database {
   projects: Project[];
   tasks: Task[];
   comments: Comment[];
+  timeLogs: TimeLog[];
   counter: number;
 }
 
@@ -151,13 +152,21 @@ function seed(): Database {
     },
   ];
 
-  return { projects, tasks, comments, counter: 0 };
+  const timeLogs: TimeLog[] = [
+    { id: "tl-1", taskId: "t-3", author: "Mateo Rivera", hours: 4,   date: "2026-06-01", note: "Button and badge components, base layout tokens.", createdAt: "2026-06-01T17:00:00.000Z" },
+    { id: "tl-2", taskId: "t-3", author: "Mateo Rivera", hours: 3.5, date: "2026-06-03", note: "Input and select field variants.", createdAt: "2026-06-03T18:00:00.000Z" },
+    { id: "tl-3", taskId: "t-8", author: "Lena Walsh",   hours: 3,   date: "2026-06-04", note: "Merged profile and preferences screens into one step.", createdAt: "2026-06-04T16:30:00.000Z" },
+    { id: "tl-4", taskId: "t-4", author: "Mateo Rivera", hours: 5,   date: "2026-06-05", note: "Initial landing page port to component library.", createdAt: "2026-06-05T17:00:00.000Z" },
+  ];
+
+  return { projects, tasks, comments, timeLogs, counter: 0 };
 }
 
 //* Singleton store — persisted on globalThis to survive HMR file saves in dev.
 export const db: Database = (globalThis.__PM_DB__ ??= seed());
 //* Patch fields added after the singleton was first created (avoids restart on schema changes).
-db.comments ??= [];
+db.comments  ??= [];
+db.timeLogs  ??= [];
 
 //* Generate a stable, unique ID for a new record using time + monotonic counter.
 export function nextId(prefix: string): string {

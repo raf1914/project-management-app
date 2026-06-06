@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getTask, getProject, getTeamMembers, getComments } from "@/lib/data";
+import { getTask, getProject, getTeamMembers, getComments, getTimeLogs } from "@/lib/data";
 import { TaskEditForm } from "@/components/task-edit-form";
 import { TaskComments } from "@/components/task-comments";
+import { TaskTimeLog } from "@/components/task-time-log";
 
 type Props = { params: Promise<{ id: string; taskId: string }> };
 
@@ -17,11 +18,12 @@ export const dynamic = "force-dynamic";
 export default async function TaskDetailPage({ params }: Props) {
   const { id, taskId } = await params;
 
-  const [task, project, teamMembers, comments] = await Promise.all([
+  const [task, project, teamMembers, comments, timeLogs] = await Promise.all([
     getTask(taskId),
     getProject(id),
     getTeamMembers(),
     getComments(taskId),
+    getTimeLogs(taskId),
   ]);
 
   if (!task || !project || task.projectId !== id) notFound();
@@ -29,6 +31,13 @@ export default async function TaskDetailPage({ params }: Props) {
   return (
     <div className="space-y-8">
       <TaskEditForm task={task} project={project} teamMembers={teamMembers} />
+      <TaskTimeLog
+        timeLogs={timeLogs}
+        taskId={task.id}
+        projectId={project.id}
+        estimateHours={task.estimateHours}
+        teamMembers={teamMembers}
+      />
       <TaskComments
         comments={comments}
         taskId={task.id}
