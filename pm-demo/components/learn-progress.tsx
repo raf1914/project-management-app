@@ -11,12 +11,14 @@
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ProgressBar } from "./ui";
-import { CheckIcon, ChevronDownIcon } from "./icons";
+import { CheckIcon, ChevronDownIcon, AlertIcon, RocketIcon } from "./icons";
 
 //* A pointer into this repo to study during a phase. `href` is set only when the
 //* file also backs a live route, so the card can offer an "open live" link.
 export type LearnReading = { path: string; href?: string; note: string };
 export type LearnResource = { label: string; href: string };
+//* A concept to learn, paired with a one-line explanation grounded in this app.
+export type LearnTopic = { term: string; detail: string };
 
 export type LearnPhase = {
   id: string;
@@ -25,9 +27,15 @@ export type LearnPhase = {
   title: string;
   duration: string;
   goal: string;
-  learn: string[];
+  //* The single most important concept to anchor the whole phase on.
+  keyIdea: string;
+  learn: LearnTopic[];
   read: LearnReading[];
   build: string;
+  //* Common mistakes / gotchas worth flagging before they bite.
+  pitfalls: string[];
+  //* A concrete self-test: "you've got it when …".
+  checkpoint: string;
   resources: LearnResource[];
   capstone?: boolean;
 };
@@ -275,12 +283,27 @@ function PhaseCard({
             {phase.goal}
           </p>
 
+          {/* The one concept to anchor on */}
+          <div className="flex gap-2.5 rounded-lg border-l-2 border-neon-cyan/60 bg-neon-cyan/[0.06] px-3 py-2.5">
+            <RocketIcon width={15} height={15} className="mt-0.5 shrink-0 text-neon-cyan" />
+            <p className="text-sm leading-relaxed text-ink">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-neon-cyan">
+                Key idea ·{" "}
+              </span>
+              {phase.keyIdea}
+            </p>
+          </div>
+
           <Section label="Learn">
-            <ul className="grid gap-1.5 sm:grid-cols-2">
+            <ul className="space-y-2">
               {phase.learn.map((item) => (
-                <li key={item} className="flex gap-2 text-sm text-ink-muted">
+                <li key={item.term} className="flex gap-2 text-sm">
                   <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-neon-cyan" />
-                  {item}
+                  <span className="text-ink-muted">
+                    <span className="font-medium text-ink">{item.term}</span>
+                    {" — "}
+                    {item.detail}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -310,6 +333,39 @@ function PhaseCard({
           <Section label="Build it">
             <p className="rounded-lg border border-neon-purple/25 bg-neon-purple/[0.07] px-3 py-2.5 text-sm text-ink">
               {phase.build}
+            </p>
+          </Section>
+
+          {phase.pitfalls.length > 0 && (
+            <Section label="Watch out for">
+              <ul className="space-y-1.5 rounded-lg border border-neon-orange/25 bg-neon-orange/[0.05] px-3 py-2.5">
+                {phase.pitfalls.map((p) => (
+                  <li key={p} className="flex gap-2 text-sm text-ink-muted">
+                    <AlertIcon
+                      width={14}
+                      height={14}
+                      className="mt-0.5 shrink-0 text-neon-orange"
+                    />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
+
+          <Section label="Checkpoint">
+            <p className="flex gap-2.5 rounded-lg border border-neon-green/25 bg-neon-green/[0.06] px-3 py-2.5 text-sm text-ink">
+              <CheckIcon
+                width={15}
+                height={15}
+                className="mt-0.5 shrink-0 text-neon-green"
+              />
+              <span>
+                <span className="font-semibold text-neon-green">
+                  You&apos;ve got it when{" "}
+                </span>
+                {phase.checkpoint}
+              </span>
             </p>
           </Section>
 
