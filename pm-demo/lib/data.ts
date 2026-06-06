@@ -31,6 +31,10 @@ export const getProjects = cache(async function getProjects(): Promise<ProjectWi
   return db.projects
     .map(function enrichProject(project) {
       const projectTasks = db.tasks.filter((t) => t.projectId === project.id);
+      const taskIds = new Set(projectTasks.map((t) => t.id));
+      const loggedHours = db.timeLogs
+        .filter((tl) => taskIds.has(tl.taskId))
+        .reduce((sum, tl) => sum + tl.hours, 0);
       return {
         ...project,
         taskCount: projectTasks.length,
@@ -39,6 +43,7 @@ export const getProjects = cache(async function getProjects(): Promise<ProjectWi
         overdueCount: projectTasks.filter(
           (t) => t.status !== "done" && t.dueDate !== null && t.dueDate < today,
         ).length,
+        loggedHours,
       };
     })
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
@@ -75,6 +80,22 @@ export const getTimeLogs = cache(async function getTimeLogs(taskId: string): Pro
     .sort((a, b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt));
 });
 
+//* Logged hours per task for an entire project — Record<taskId, totalHours>.
+export const getLoggedHoursForProject = cache(async function getLoggedHoursForProject(
+  projectId: string,
+): Promise<Record<string, number>> {
+  const taskIds = new Set(
+    db.tasks.filter((t) => t.projectId === projectId).map((t) => t.id),
+  );
+  const map: Record<string, number> = {};
+  for (const tl of db.timeLogs) {
+    if (taskIds.has(tl.taskId)) {
+      map[tl.taskId] = (map[tl.taskId] ?? 0) + tl.hours;
+    }
+  }
+  return map;
+});
+
 //* Unique, sorted list of assignee names across all tasks (excludes "Unassigned").
 export const getTeamMembers = cache(async function getTeamMembers(): Promise<string[]> {
   const assigneeNames = db.tasks
@@ -101,16 +122,22 @@ export const getDashboardStats = cache(async function getDashboardStats(): Promi
   const doneTasks = tasks.filter((t) => t.status === "done");
   const doneCount = doneTasks.length;
 
-  //* Billable-hour rollups: projected = whole scope, current = delivered (done).
+  //* Billable-hour rollups: projected = whole scope (estimates), current = actual logged hours.
   const projectedHours = tasks.reduce((sum, t) => sum + t.estimateHours, 0);
-  const currentHours = doneTasks.reduce((sum, t) => sum + t.estimateHours, 0);
+  const currentHours  = db.timeLogs.reduce((sum, tl) => sum + tl.hours, 0);
 
-  //* A project is over budget when its committed task hours exceed its budget.
+  //* Precompute logged hours per task for budget comparisons.
+  const loggedByTask: Record<string, number> = {};
+  for (const tl of db.timeLogs) {
+    loggedByTask[tl.taskId] = (loggedByTask[tl.taskId] ?? 0) + tl.hours;
+  }
+
+  //* A project is over budget when its actual logged hours exceed its budget.
   const overBudgetCount = projects.filter(function isOverBudget(project) {
-    const committedHours = tasks
+    const projectLoggedHours = tasks
       .filter((t) => t.projectId === project.id)
-      .reduce((sum, t) => sum + t.estimateHours, 0);
-    return committedHours > project.budgetHours;
+      .reduce((sum, t) => sum + (loggedByTask[t.id] ?? 0), 0);
+    return projectLoggedHours > project.budgetHours;
   }).length;
 
   return {

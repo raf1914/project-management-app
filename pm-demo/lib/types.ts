@@ -49,6 +49,8 @@ export interface ProjectWithStats extends Project {
   progress: number;
   /** Number of non-done tasks whose due date is in the past. */
   overdueCount: number;
+  /** Sum of all time-log entries for this project's tasks. */
+  loggedHours: number;
 }
 
 export interface Comment {
@@ -80,7 +82,7 @@ export interface DashboardStats {
   completionRate: number; // 0–100 across all tasks
   /** Total estimated billable hours across all tasks (full projected scope). */
   projectedHours: number;
-  /** Billable hours already delivered (sum of done tasks' estimates). */
+  /** Actual hours logged via time-tracking entries (across all tasks). */
   currentHours: number;
   /** Projects whose committed hours exceed their budget. */
   overBudgetCount: number;

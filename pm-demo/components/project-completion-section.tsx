@@ -23,7 +23,7 @@ interface Props {
   doneCount: number;
   total: number;
   projectedHours: number;
-  currentHours: number;
+  loggedHours: number;
   overdueCount: number;
   overBudget: boolean;
   budgetHours: number;
@@ -37,7 +37,7 @@ export function ProjectCompletionSection({
   doneCount,
   total,
   projectedHours,
-  currentHours,
+  loggedHours,
   overdueCount,
   overBudget,
   budgetHours,
@@ -92,8 +92,8 @@ export function ProjectCompletionSection({
           />
           <MetricTile
             icon={<CheckIcon width={16} height={16} />}
-            value={`${currentHours}h`}
-            label="Current billable"
+            value={`${loggedHours}h`}
+            label="Hours logged"
             tone="text-neon-green"
           />
           <MetricTile
@@ -104,7 +104,7 @@ export function ProjectCompletionSection({
           />
           <MetricTile
             icon={<FireIcon width={16} height={16} />}
-            value={`${projectedHours}/${budgetHours}h`}
+            value={`${loggedHours}/${budgetHours}h`}
             label="Budget"
             tone={overBudget ? "text-neon-red" : "text-neon-purple"}
           />

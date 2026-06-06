@@ -15,10 +15,12 @@ const OVER_RING: Record<TaskStatus, string> = {
 function KanbanColumn({
   status,
   tasks,
+  loggedHoursMap,
   onDrop,
 }: {
   status: TaskStatus;
   tasks: Task[];
+  loggedHoursMap: Record<string, number>;
   onDrop: (taskId: string, fromStatus: TaskStatus) => void;
 }) {
   const meta = STATUS_META[status];
@@ -69,7 +71,13 @@ function KanbanColumn({
             {isOver ? "Release to move here" : "No tasks"}
           </p>
         ) : (
-          tasks.map((task) => <TaskCard key={task.id} task={task} />)
+          tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              loggedHours={loggedHoursMap[task.id] ?? 0}
+            />
+          ))
         )}
       </div>
     </section>
@@ -78,8 +86,10 @@ function KanbanColumn({
 
 export function KanbanBoard({
   board,
+  loggedHoursMap = {},
 }: {
   board: Record<TaskStatus, Task[]>;
+  loggedHoursMap?: Record<string, number>;
 }) {
   const [, startTransition] = useTransition();
   const [optimisticBoard, moveOptimistic] = useOptimistic(
@@ -116,6 +126,7 @@ export function KanbanBoard({
           key={status}
           status={status}
           tasks={optimisticBoard[status]}
+          loggedHoursMap={loggedHoursMap}
           onDrop={(taskId, fromStatus) => handleDrop(taskId, fromStatus, status)}
         />
       ))}

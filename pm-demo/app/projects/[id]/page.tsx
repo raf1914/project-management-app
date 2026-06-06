@@ -6,7 +6,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getBoard, getProject, getTeamMembers } from "@/lib/data";
+import { getBoard, getProject, getTeamMembers, getLoggedHoursForProject } from "@/lib/data";
 import { deleteProject, setProjectStatus } from "@/lib/actions";
 import { isOverdue } from "@/lib/format";
 import {
@@ -38,19 +38,23 @@ export default async function ProjectDetailPage({ params }: Props) {
   const project = await getProject(id);
   if (!project) notFound();
 
-  const [board, teamMembers] = await Promise.all([getBoard(id), getTeamMembers()]);
+  const [board, teamMembers, loggedHoursMap] = await Promise.all([
+    getBoard(id),
+    getTeamMembers(),
+    getLoggedHoursForProject(id),
+  ]);
   const tasks = [...board.todo, ...board["in-progress"], ...board.done];
   const total = tasks.length;
   const progress = total ? Math.round((board.done.length / total) * 100) : 0;
   const color = PROJECT_COLOR_META[project.color];
 
-  //* Per-project billing / risk, mirroring the dashboard.
+  //* Per-project billing / risk — logged hours drive budget, estimates drive projection.
   const projectedHours = tasks.reduce((sum, t) => sum + t.estimateHours, 0);
-  const currentHours = board.done.reduce((sum, t) => sum + t.estimateHours, 0);
+  const loggedHours = Object.values(loggedHoursMap).reduce((sum, h) => sum + h, 0);
   const overdueCount = tasks.filter(
     (t) => t.status !== "done" && isOverdue(t.dueDate),
   ).length;
-  const overBudget = projectedHours > project.budgetHours;
+  const overBudget = loggedHours > project.budgetHours;
 
   return (
     <div className="space-y-5">
@@ -129,7 +133,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         doneCount={board.done.length}
         total={total}
         projectedHours={projectedHours}
-        currentHours={currentHours}
+        loggedHours={loggedHours}
         overdueCount={overdueCount}
         overBudget={overBudget}
         budgetHours={project.budgetHours}
@@ -142,7 +146,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted">
           Board
         </h2>
-        <KanbanBoard board={board} />
+        <KanbanBoard board={board} loggedHoursMap={loggedHoursMap} />
       </section>
     </div>
   );

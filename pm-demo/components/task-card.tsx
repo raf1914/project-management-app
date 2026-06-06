@@ -10,7 +10,7 @@ import { Avatar, Badge } from "./ui";
 import { ConfirmButton } from "./form-buttons";
 import { ClockIcon, TrashIcon } from "./icons";
 
-export function TaskCard({ task }: { task: Task }) {
+export function TaskCard({ task, loggedHours = 0 }: { task: Task; loggedHours?: number }) {
   const priority = PRIORITY_META[task.priority];
   const overdue = task.status !== "done" && isOverdue(task.dueDate);
   const [isDragging, setIsDragging] = useState(false);
@@ -64,10 +64,23 @@ export function TaskCard({ task }: { task: Task }) {
         </div>
 
         <div className="flex items-center gap-1">
-          <span className="flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-medium text-ink-muted/70 ring-1 ring-inset ring-white/10">
-            <ClockIcon width={10} height={10} />
-            {task.estimateHours}h
-          </span>
+          {loggedHours > 0 ? (
+            <span
+              className={`flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-medium ring-1 ring-inset ${
+                loggedHours > task.estimateHours
+                  ? "bg-neon-red/10 text-neon-red ring-neon-red/20"
+                  : "bg-neon-cyan/10 text-neon-cyan ring-neon-cyan/20"
+              }`}
+            >
+              <ClockIcon width={10} height={10} />
+              {loggedHours}/{task.estimateHours}h
+            </span>
+          ) : (
+            <span className="flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[10px] font-medium text-ink-muted/70 ring-1 ring-inset ring-white/10">
+              <ClockIcon width={10} height={10} />
+              {task.estimateHours}h
+            </span>
+          )}
           <form action={deleteTask.bind(null, task.id)}>
             <ConfirmButton
               confirmMessage={`Delete task "${task.title}"?`}
