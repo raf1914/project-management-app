@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getBoard, getProject } from "@/lib/data";
+import { getBoard, getProject, getTeamMembers } from "@/lib/data";
 import { deleteProject, setProjectStatus } from "@/lib/actions";
 import { isOverdue } from "@/lib/format";
 import {
@@ -33,7 +33,7 @@ export default async function ProjectDetailPage({ params }: Props) {
   const project = await getProject(id);
   if (!project) notFound();
 
-  const board = await getBoard(id);
+  const [board, teamMembers] = await Promise.all([getBoard(id), getTeamMembers()]);
   const tasks = [...board.todo, ...board["in-progress"], ...board.done];
   const total = tasks.length;
   const progress = total ? Math.round((board.done.length / total) * 100) : 0;
@@ -129,6 +129,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         overBudget={overBudget}
         budgetHours={project.budgetHours}
         barClass={`${color.bar} ${color.text}`}
+        teamMembers={teamMembers}
       />
 
       {/* Board */}

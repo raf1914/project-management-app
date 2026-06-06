@@ -27,9 +27,11 @@ function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.Re
  */
 export function NewTaskForm({
   projectId,
+  teamMembers,
   onSuccess,
 }: {
   projectId: string;
+  teamMembers: string[];
   onSuccess?: () => void;
 }) {
   const [state, formAction, pending] = useActionState<FormState, FormData>(
@@ -90,13 +92,17 @@ export function NewTaskForm({
 
         <div className="sm:col-span-4">
           <FieldLabel htmlFor="task-assignee">Assignee</FieldLabel>
-          <input
+          <SelectField
+            key={`assignee-${resetKey}`}
             id="task-assignee"
             name="assignee"
-            maxLength={80}
-            placeholder="Unassigned"
-            autoComplete="off"
-            className={field}
+            defaultValue=""
+            aria-label="Assignee"
+            searchable
+            options={[
+              { value: "", label: "Unassigned" },
+              ...teamMembers.map((m) => ({ value: m, label: m })),
+            ]}
           />
         </div>
         <div className="sm:col-span-3">

@@ -23,6 +23,7 @@ interface Props {
   overBudget: boolean;
   budgetHours: number;
   barClass: string;
+  teamMembers: string[];
 }
 
 export function ProjectCompletionSection({
@@ -36,6 +37,7 @@ export function ProjectCompletionSection({
   overBudget,
   budgetHours,
   barClass,
+  teamMembers,
 }: Props) {
   const [formOpen, setFormOpen] = useState(false);
 
@@ -111,7 +113,7 @@ export function ProjectCompletionSection({
         }`}
       >
         <div className="overflow-hidden">
-          <NewTaskForm projectId={projectId} onSuccess={() => setFormOpen(false)} />
+          <NewTaskForm projectId={projectId} teamMembers={teamMembers} onSuccess={() => setFormOpen(false)} />
         </div>
       </div>
     </>

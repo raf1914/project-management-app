@@ -62,6 +62,17 @@ export const getTask = cache(
   },
 );
 
+/** Unique, sorted list of assignee names across all tasks. */
+export const getTeamMembers = cache(async (): Promise<string[]> => {
+  return [
+    ...new Set(
+      db.tasks
+        .map((t) => t.assignee)
+        .filter((a) => a && a !== "Unassigned"),
+    ),
+  ].sort();
+});
+
 /** Group a project's tasks into kanban columns keyed by status. */
 export const getBoard = cache(
   async (
