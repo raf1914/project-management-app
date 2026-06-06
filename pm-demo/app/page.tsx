@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { getDashboardStats, getProjects } from "@/lib/data";
 import { Badge, EmptyState, ProgressBar } from "@/components/ui";
 import { PROJECT_COLOR_META, PROJECT_STATUS_META } from "@/lib/ui";
@@ -67,63 +66,36 @@ export default async function DashboardPage() {
               Dashboard
             </h1>
             <p className="mt-1.5 text-[11px] uppercase tracking-[0.28em] text-ink-muted">
-              Mission Control · {stats.projectCount} projects online
+              Mission Control
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2.5">
-          <div className="hidden items-center gap-2.5 sm:flex">
-            <Readout label="Active" value={stats.activeProjectCount} tone="text-neon-cyan" />
-            <Readout label="Overdue" value={stats.overdueCount} tone="text-neon-red" />
-          </div>
-          <Link href="/projects/new" className="btn-neon">
-            <PlusIcon width={16} height={16} />
-            New Project
-          </Link>
-        </div>
+        <Link href="/projects/new" className="btn-neon">
+          <PlusIcon width={16} height={16} />
+          New Project
+        </Link>
       </header>
 
       {/* ===== Console grid: wide completion + tall telemetry + mission list ===== */}
       <div className="grid gap-5 lg:grid-cols-3">
-        {/* Completion readout (wide) */}
-        <section className="panel p-6 lg:col-span-2">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted">
-                Overall Completion
-              </h2>
-              <p className="mt-2 font-display text-5xl font-bold leading-none holo-text">
-                {stats.completionRate}
-                <span className="text-2xl">%</span>
-              </p>
-            </div>
-            <p className="shrink-0 text-right text-xs leading-relaxed text-ink-muted">
-              <span className="font-display text-base text-neon-green">
-                {stats.doneCount}
-              </span>{" "}
-              done
-              <br />
-              of {stats.taskCount} tasks
-            </p>
-          </div>
-          <div className="mt-5">
+        {/* Completion — the single hero metric (wide) */}
+        <section className="panel flex flex-col justify-center p-6 lg:col-span-2">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted">
+            Overall Completion
+          </h2>
+          <p className="mt-2 font-display text-6xl font-bold leading-none holo-text">
+            {stats.completionRate}
+            <span className="text-3xl">%</span>
+          </p>
+          <div className="mt-6">
             <ProgressBar
               value={stats.completionRate}
               barClass="bg-neon-green text-neon-green"
             />
           </div>
-          <div className="mt-4 grid grid-cols-3 gap-3">
-            <Segment label="To Do" value={stats.todoCount} tone="text-neon-cyan" />
-            <Segment
-              label="In Progress"
-              value={stats.inProgressCount}
-              tone="text-neon-orange"
-            />
-            <Segment label="Done" value={stats.doneCount} tone="text-neon-green" />
-          </div>
         </section>
 
-        {/* Telemetry stack (tall, right rail) */}
+        {/* Telemetry stack (tall, right rail) — owns all the counts */}
         <section className="panel flex flex-col p-0 lg:col-span-1 lg:row-span-2">
           <h2 className="border-b border-white/5 px-5 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted">
             System Status
@@ -232,42 +204,3 @@ export default async function DashboardPage() {
   );
 }
 
-/** Small inline HUD readout chip used in the command strip. */
-function Readout({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: ReactNode;
-  tone: string;
-}) {
-  return (
-    <div className="rounded-md border border-white/10 bg-white/[0.03] px-3 py-1.5 text-center">
-      <p className="text-[10px] uppercase tracking-wider text-ink-muted">{label}</p>
-      <p className={`font-display text-base font-bold leading-tight ${tone}`}>
-        {value}
-      </p>
-    </div>
-  );
-}
-
-/** Segmented count tile in the completion readout. */
-function Segment({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: ReactNode;
-  tone: string;
-}) {
-  return (
-    <div className="rounded-md border border-white/5 bg-white/[0.02] py-2 text-center">
-      <p className={`font-display text-lg font-bold ${tone}`}>{value}</p>
-      <p className="mt-0.5 text-[10px] uppercase tracking-wider text-ink-muted">
-        {label}
-      </p>
-    </div>
-  );
-}
