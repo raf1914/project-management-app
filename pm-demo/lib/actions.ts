@@ -153,3 +153,38 @@ export async function deleteTask(id: string) {
   refreshLists();
   revalidatePath(`/projects/${owningProjectId}`);
 }
+
+export async function updateTask(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const id = str(formData, "id");
+  const task = db.tasks.find((t) => t.id === id);
+  if (!task) return { error: "Task not found." };
+
+  const title = str(formData, "title", 200);
+  if (!title) return { error: "Task title is required." };
+
+  const priorityInput = str(formData, "priority") as Priority;
+  const statusInput   = str(formData, "status") as TaskStatus;
+  const estimateInput = parseFloat(str(formData, "estimateHours"));
+
+  task.title       = title;
+  task.description = str(formData, "description");
+  task.status      = TASK_STATUSES.includes(statusInput) ? statusInput : task.status;
+  task.priority    = PRIORITIES.includes(priorityInput) ? priorityInput : task.priority;
+  task.assignee    = str(formData, "assignee", 80) || "Unassigned";
+  task.dueDate     = str(formData, "dueDate") || null;
+  task.estimateHours = estimateInput > 0 ? estimateInput : HOURS_BY_PRIORITY[task.priority];
+
+  refreshLists();
+  revalidatePath(`/projects/${task.projectId}`);
+  revalidatePath(`/projects/${task.projectId}/tasks/${id}`);
+  return { ok: true };
+}
+
+export async function deleteTaskAndRedirect(id: string, projectId: string) {
+  db.tasks = db.tasks.filter((t) => t.id !== id);
+  refreshLists();
+  redirect(`/projects/${projectId}`);
+}

@@ -3,6 +3,7 @@
  * badge, assignee, due date, status-move arrows, and a delete action.
  */
 
+import Link from "next/link";
 import { deleteTask, setTaskStatus } from "@/lib/actions";
 import { formatDate, isOverdue } from "@/lib/format";
 import { PRIORITY_META, STATUS_META, nextStatus, prevStatus } from "@/lib/ui";
@@ -25,9 +26,12 @@ export function TaskCard({ task }: { task: Task }) {
   return (
     <article className="rounded-lg border border-white/10 bg-[#0e0524]/70 p-3 backdrop-blur-sm">
       <div className="flex items-start justify-between gap-2">
-        <h4 className="min-w-0 break-words text-sm font-medium leading-snug text-ink">
+        <Link
+          href={`/projects/${task.projectId}/tasks/${task.id}`}
+          className="min-w-0 break-words text-sm font-medium leading-snug text-ink transition-colors hover:text-neon-cyan"
+        >
           {task.title}
-        </h4>
+        </Link>
         <Badge className={`shrink-0 ${priority.badge}`}>{priority.label}</Badge>
       </div>
 
