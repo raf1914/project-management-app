@@ -185,6 +185,41 @@ export async function updateTask(
 
 export async function deleteTaskAndRedirect(id: string, projectId: string) {
   db.tasks = db.tasks.filter((t) => t.id !== id);
+  db.comments = db.comments.filter((c) => c.taskId !== id);
   refreshLists();
   redirect(`/projects/${projectId}`);
+}
+
+// ---------------------------------------------------------------------------
+// Comments
+// ---------------------------------------------------------------------------
+
+export async function addComment(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const taskId = str(formData, "taskId");
+  const task = db.tasks.find((t) => t.id === taskId);
+  if (!task) return { error: "Task not found." };
+
+  const body = str(formData, "body", 2000);
+  if (!body) return { error: "Update cannot be empty." };
+
+  const author = str(formData, "author", 80) || "Unknown";
+
+  db.comments.push({
+    id: nextId("c"),
+    taskId,
+    author,
+    body,
+    createdAt: new Date().toISOString(),
+  });
+
+  revalidatePath(`/projects/${task.projectId}/tasks/${taskId}`);
+  return { ok: true };
+}
+
+export async function deleteComment(id: string, taskId: string, projectId: string) {
+  db.comments = db.comments.filter((c) => c.id !== id);
+  revalidatePath(`/projects/${projectId}/tasks/${taskId}`);
 }

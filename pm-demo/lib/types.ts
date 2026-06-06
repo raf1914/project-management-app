@@ -51,6 +51,14 @@ export interface ProjectWithStats extends Project {
   overdueCount: number;
 }
 
+export interface Comment {
+  id: string;
+  taskId: string;
+  author: string;
+  body: string;
+  createdAt: string; // ISO timestamp
+}
+
 export interface DashboardStats {
   projectCount: number;
   activeProjectCount: number;

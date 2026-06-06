@@ -9,6 +9,7 @@ import { cache } from "react";
 import { db } from "./store";
 import { todayLocal } from "./format";
 import type {
+  Comment,
   DashboardStats,
   Project,
   ProjectWithStats,
@@ -57,6 +58,13 @@ export const getTasksByProject = cache(async function getTasksByProject(projectI
 //* Single task by ID — undefined when not found.
 export const getTask = cache(async function getTask(id: string): Promise<Task | undefined> {
   return db.tasks.find((t) => t.id === id);
+});
+
+//* All comments for a task, oldest-first (thread order).
+export const getComments = cache(async function getComments(taskId: string): Promise<Comment[]> {
+  return db.comments
+    .filter((c) => c.taskId === taskId)
+    .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 });
 
 //* Unique, sorted list of assignee names across all tasks (excludes "Unassigned").

@@ -10,7 +10,7 @@
  *       Replacement during `next dev`. Resets when the server process restarts.
  */
 
-import type { Priority, Project, Task } from "./types";
+import type { Comment, Priority, Project, Task } from "./types";
 
 //* Default billable-hour estimate per task priority.
 export const HOURS_BY_PRIORITY: Record<Priority, number> = {
@@ -22,6 +22,7 @@ export const HOURS_BY_PRIORITY: Record<Priority, number> = {
 interface Database {
   projects: Project[];
   tasks: Task[];
+  comments: Comment[];
   counter: number;
 }
 
@@ -119,11 +120,44 @@ function seed(): Database {
       "Align with the design team on visual assets, brand guidelines, and approval workflow for campaign materials."),
   ];
 
-  return { projects, tasks, counter: 0 };
+  const comments: Comment[] = [
+    {
+      id: "c-1",
+      taskId: "t-1",
+      author: "Dana Kim",
+      body: "Audit complete. Found 12 pages with inconsistent layouts and 3 with significant performance issues. Flagging the product pages as highest priority.",
+      createdAt: "2026-05-11T14:30:00.000Z",
+    },
+    {
+      id: "c-2",
+      taskId: "t-3",
+      author: "Mateo Rivera",
+      body: "Started with the button and badge components. Need to sync with Dana on hover state for the ghost variant — holding off on inputs until that's resolved.",
+      createdAt: "2026-06-01T10:15:00.000Z",
+    },
+    {
+      id: "c-3",
+      taskId: "t-3",
+      author: "Dana Kim",
+      body: "Ghost hover should use a 10% opacity tint of the brand color. Sent the token reference over Slack.",
+      createdAt: "2026-06-02T09:40:00.000Z",
+    },
+    {
+      id: "c-4",
+      taskId: "t-8",
+      author: "Lena Walsh",
+      body: "Cut the flow from 5 steps to 3 by merging the profile and preferences screens. Running usability tests this week.",
+      createdAt: "2026-06-03T16:00:00.000Z",
+    },
+  ];
+
+  return { projects, tasks, comments, counter: 0 };
 }
 
 //* Singleton store — persisted on globalThis to survive HMR file saves in dev.
 export const db: Database = (globalThis.__PM_DB__ ??= seed());
+//* Patch fields added after the singleton was first created (avoids restart on schema changes).
+db.comments ??= [];
 
 //* Generate a stable, unique ID for a new record using time + monotonic counter.
 export function nextId(prefix: string): string {
