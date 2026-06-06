@@ -1,38 +1,43 @@
-/**
- * @file TaskCard component that renders a single kanban task with priority
- * badge, assignee, due date, status-move arrows, and a delete action.
- */
+"use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { deleteTask, setTaskStatus } from "@/lib/actions";
+import { deleteTask } from "@/lib/actions";
 import { formatDate, isOverdue } from "@/lib/format";
-import { PRIORITY_META, STATUS_META, nextStatus, prevStatus } from "@/lib/ui";
+import { PRIORITY_META } from "@/lib/ui";
 import type { Task } from "@/lib/types";
 import { Avatar, Badge } from "./ui";
-import { ConfirmButton, SubmitButton } from "./form-buttons";
-import { ArrowLeftIcon, ArrowRightIcon, ClockIcon, TrashIcon } from "./icons";
+import { ConfirmButton } from "./form-buttons";
+import { ClockIcon, TrashIcon } from "./icons";
 
-/**
- * A single task on the kanban board. Status moves and deletion are plain forms
- * bound to Server Actions, so they work even without client JavaScript
- * (progressive enhancement); the submit buttons add a pending state on top.
- */
 export function TaskCard({ task }: { task: Task }) {
   const priority = PRIORITY_META[task.priority];
-  const prev = prevStatus(task.status);
-  const next = nextStatus(task.status);
   const overdue = task.status !== "done" && isOverdue(task.dueDate);
+  const [isDragging, setIsDragging] = useState(false);
 
   return (
-    <article className="rounded-lg border border-white/10 bg-[#0e0524]/70 p-3 backdrop-blur-sm">
+    <article
+      draggable
+      onDragStart={(e) => {
+        setIsDragging(true);
+        e.dataTransfer.setData("taskId", task.id);
+        e.dataTransfer.setData("taskStatus", task.status);
+        e.dataTransfer.effectAllowed = "move";
+      }}
+      onDragEnd={() => setIsDragging(false)}
+      className={`relative rounded-lg border border-white/10 bg-[#0e0524]/70 p-3 backdrop-blur-sm transition-[border-color,opacity] hover:border-white/20 cursor-grab active:cursor-grabbing select-none ${
+        isDragging ? "opacity-40" : ""
+      }`}
+    >
       <div className="flex items-start justify-between gap-2">
         <Link
           href={`/projects/${task.projectId}/tasks/${task.id}`}
-          className="min-w-0 break-words text-sm font-medium leading-snug text-ink transition-colors hover:text-neon-cyan"
+          draggable={false}
+          className="min-w-0 break-words text-sm font-medium leading-snug text-ink transition-colors hover:text-neon-cyan after:absolute after:inset-0 after:content-['']"
         >
           {task.title}
         </Link>
-        <Badge className={`shrink-0 ${priority.badge}`}>{priority.label}</Badge>
+        <Badge className={`relative z-10 shrink-0 ${priority.badge}`}>{priority.label}</Badge>
       </div>
 
       {task.description && (
@@ -45,7 +50,7 @@ export function TaskCard({ task }: { task: Task }) {
         Added {formatDate(task.createdAt)}
       </p>
 
-      <div className="mt-2 flex items-center justify-between gap-2">
+      <div className="relative z-10 mt-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-xs text-ink-muted">
           <Avatar name={task.assignee} />
           <span>{task.assignee}</span>
@@ -63,26 +68,6 @@ export function TaskCard({ task }: { task: Task }) {
             <ClockIcon width={10} height={10} />
             {task.estimateHours}h
           </span>
-          {prev && (
-            <form action={setTaskStatus.bind(null, task.id, prev)}>
-              <SubmitButton
-                className="rounded-md p-1 text-ink-muted/70 transition-colors hover:bg-white/10 hover:text-neon-cyan disabled:opacity-50"
-              >
-                <span className="sr-only">Move to {STATUS_META[prev].label}</span>
-                <ArrowLeftIcon width={16} height={16} />
-              </SubmitButton>
-            </form>
-          )}
-          {next && (
-            <form action={setTaskStatus.bind(null, task.id, next)}>
-              <SubmitButton
-                className="rounded-md p-1 text-ink-muted/70 transition-colors hover:bg-white/10 hover:text-neon-cyan disabled:opacity-50"
-              >
-                <span className="sr-only">Move to {STATUS_META[next].label}</span>
-                <ArrowRightIcon width={16} height={16} />
-              </SubmitButton>
-            </form>
-          )}
           <form action={deleteTask.bind(null, task.id)}>
             <ConfirmButton
               confirmMessage={`Delete task "${task.title}"?`}
