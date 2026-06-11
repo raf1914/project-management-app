@@ -1,0 +1,111 @@
+-- schema.sql — SQLite schema for the pm-demo project-management app.
+--
+-- Tables mirror the in-memory store (lib/store.ts `Database`) and column names
+-- match the TypeScript interfaces in lib/types.ts exactly (camelCase), so a
+-- `SELECT *` row satisfies the corresponding interface with no field mapping.
+-- CHECK constraints encode the enums in lib/types.ts and the validation rules
+-- in lib/actions.ts. The views mirror the derived types (ProjectWithStats,
+-- DashboardStats) computed in lib/data.ts.
+--
+-- Build the database:
+--   sqlite3 pm.db ".read schema.sql" ".read seed.sql"
+--
+-- NOTE: foreign_keys is a per-connection pragma in SQLite — every connection
+-- that mutates this database must enable it.
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE projects (
+  id          TEXT PRIMARY KEY,                -- e.g. "p-1" / nextId("p")
+  name        TEXT NOT NULL CHECK (length(name) BETWEEN 1 AND 120),
+  description TEXT NOT NULL DEFAULT '' CHECK (length(description) <= 2000),
+  status      TEXT NOT NULL DEFAULT 'active'
+              CHECK (status IN ('active', 'on-hold', 'completed')),
+  -- Tailwind-friendly accent color used for the project badge/avatar.
+  color       TEXT NOT NULL DEFAULT 'indigo'
+              CHECK (color IN ('indigo', 'emerald', 'amber', 'rose', 'sky', 'violet')),
+  -- Billable-hour budget for the project.
+  budgetHours REAL NOT NULL DEFAULT 40 CHECK (budgetHours >= 0),
+  createdAt   TEXT NOT NULL                    -- ISO 8601 timestamp
+);
+
+CREATE TABLE tasks (
+  id            TEXT PRIMARY KEY,              -- e.g. "t-1" / nextId("t")
+  projectId     TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  title         TEXT NOT NULL CHECK (length(title) BETWEEN 1 AND 200),
+  description   TEXT NOT NULL DEFAULT '' CHECK (length(description) <= 2000),
+  status        TEXT NOT NULL DEFAULT 'todo'
+                CHECK (status IN ('todo', 'in-progress', 'done')),
+  priority      TEXT NOT NULL DEFAULT 'medium'
+                CHECK (priority IN ('low', 'medium', 'high')),
+  assignee      TEXT NOT NULL DEFAULT 'Unassigned' CHECK (length(assignee) <= 80),
+  -- Estimated billable hours; defaults per priority live in the app
+  -- (HOURS_BY_PRIORITY: low 6, medium 12, high 20).
+  estimateHours REAL NOT NULL CHECK (estimateHours > 0),
+  dueDate       TEXT,                          -- ISO date yyyy-mm-dd, or NULL
+  createdAt     TEXT NOT NULL                  -- ISO 8601 timestamp
+);
+
+CREATE TABLE comments (
+  id        TEXT PRIMARY KEY,                  -- e.g. "c-1" / nextId("c")
+  taskId    TEXT NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+  author    TEXT NOT NULL DEFAULT 'Unknown' CHECK (length(author) <= 80),
+  body      TEXT NOT NULL CHECK (length(body) BETWEEN 1 AND 2000),
+  createdAt TEXT NOT NULL                      -- ISO 8601 timestamp
+);
+
+CREATE TABLE timeLogs (
+  id        TEXT PRIMARY KEY,                  -- e.g. "tl-1" / nextId("tl")
+  taskId    TEXT NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+  author    TEXT NOT NULL DEFAULT 'Unknown' CHECK (length(author) <= 80),
+  -- lib/actions.ts logTime(): > 0, max 24 per entry, rounded to nearest 0.25.
+  hours     REAL NOT NULL CHECK (hours > 0 AND hours <= 24),
+  date      TEXT NOT NULL,                     -- ISO date yyyy-mm-dd
+  note      TEXT NOT NULL DEFAULT '' CHECK (length(note) <= 300),
+  createdAt TEXT NOT NULL                      -- ISO 8601 timestamp
+);
+
+-- The app's read paths: tasks by project, comments / time logs by task.
+CREATE INDEX idx_tasks_projectId ON tasks(projectId);
+CREATE INDEX idx_comments_taskId ON comments(taskId);
+CREATE INDEX idx_timeLogs_taskId ON timeLogs(taskId);
+
+-- projectStats — mirrors ProjectWithStats (lib/types.ts) as computed by
+-- getProjects() in lib/data.ts, newest-first. "Overdue" compares against
+-- date('now','localtime') to match todayLocal() in lib/format.ts.
+CREATE VIEW projectStats AS
+SELECT
+  p.*,
+  (SELECT count(*) FROM tasks t WHERE t.projectId = p.id) AS taskCount,
+  (SELECT count(*) FROM tasks t
+    WHERE t.projectId = p.id AND t.status = 'done')       AS doneCount,
+  coalesce((SELECT CAST(round(100.0 * sum(t.status = 'done') / count(*)) AS INTEGER)
+    FROM tasks t WHERE t.projectId = p.id), 0)            AS progress,
+  (SELECT count(*) FROM tasks t
+    WHERE t.projectId = p.id AND t.status <> 'done'
+      AND t.dueDate IS NOT NULL
+      AND t.dueDate < date('now', 'localtime'))           AS overdueCount,
+  coalesce((SELECT sum(tl.hours) FROM timeLogs tl
+    JOIN tasks t ON t.id = tl.taskId
+    WHERE t.projectId = p.id), 0)                         AS loggedHours
+FROM projects p
+ORDER BY p.createdAt DESC;
+
+-- dashboardStats — mirrors DashboardStats (lib/types.ts) as computed by
+-- getDashboardStats() in lib/data.ts. Always exactly one row.
+CREATE VIEW dashboardStats AS
+SELECT
+  (SELECT count(*) FROM projects)                          AS projectCount,
+  (SELECT count(*) FROM projects WHERE status = 'active')  AS activeProjectCount,
+  (SELECT count(*) FROM tasks)                             AS taskCount,
+  (SELECT count(*) FROM tasks WHERE status = 'todo')       AS todoCount,
+  (SELECT count(*) FROM tasks WHERE status = 'in-progress') AS inProgressCount,
+  (SELECT count(*) FROM tasks WHERE status = 'done')       AS doneCount,
+  (SELECT count(*) FROM tasks
+    WHERE status <> 'done' AND dueDate IS NOT NULL
+      AND dueDate < date('now', 'localtime'))              AS overdueCount,
+  coalesce((SELECT CAST(round(100.0 * sum(status = 'done') / count(*)) AS INTEGER)
+    FROM tasks), 0)                                        AS completionRate,
+  coalesce((SELECT sum(estimateHours) FROM tasks), 0)      AS projectedHours,
+  coalesce((SELECT sum(hours) FROM timeLogs), 0)           AS currentHours,
+  (SELECT count(*) FROM projectStats
+    WHERE loggedHours > budgetHours)                       AS overBudgetCount;
