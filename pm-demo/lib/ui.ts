@@ -37,6 +37,14 @@ export const STATUS_META: Record<
   },
 };
 
+//* Default billable-hour estimate per task priority — used when a task is
+//* created without an explicit estimate.
+export const HOURS_BY_PRIORITY: Record<Priority, number> = {
+  low: 6,
+  medium: 12,
+  high: 20,
+};
+
 export const PRIORITY_META: Record<
   Priority,
   { label: string; badge: string }

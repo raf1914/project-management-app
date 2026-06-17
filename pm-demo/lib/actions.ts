@@ -3,9 +3,11 @@
 /**
  * @file Server Actions — the only place data is mutated.
  *
- *       Every export is a Server Action ("use server" at file top). They mutate
- *       the in-memory store, then call revalidatePath so affected routes re-render
- *       with fresh data and the client router cache is invalidated.
+ *       Every export is a Server Action ("use server" at file top). They write
+ *       to the SQLite database (lib/db.ts), then call revalidatePath so affected
+ *       routes re-render with fresh data and the client router cache is
+ *       invalidated. New ids are assigned by the INTEGER PRIMARY KEY columns;
+ *       inserts omit id and read it back from lastInsertRowid.
  *
  *       NOTE: A real app must authenticate/authorize inside each action — these are
  *       reachable via direct POST requests, not just through the UI.
@@ -13,13 +15,17 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { db, HOURS_BY_PRIORITY, nextId } from "./store";
-import { PROJECT_COLORS, TASK_STATUSES, PROJECT_STATUSES } from "./ui";
+import { one, run } from "./db";
+import {
+  HOURS_BY_PRIORITY,
+  PROJECT_COLORS,
+  TASK_STATUSES,
+  PROJECT_STATUSES,
+} from "./ui";
 import type {
   Priority,
   ProjectColor,
   ProjectStatus,
-  Task,
   TaskStatus,
 } from "./types";
 
@@ -39,6 +45,15 @@ function str(formData: FormData, key: string, maxLen = 2000): string {
 function refreshLists() {
   revalidatePath("/");
   revalidatePath("/projects");
+}
+
+//* projectId of a task, or undefined if it doesn't exist.
+async function projectIdOfTask(taskId: string): Promise<string | undefined> {
+  const row = await one<{ projectId: string }>(
+    "SELECT CAST(projectId AS TEXT) AS projectId FROM tasks WHERE id = ?",
+    [taskId],
+  );
+  return row?.projectId;
 }
 
 // ---------------------------------------------------------------------------
@@ -61,34 +76,34 @@ export async function createProject(
   const budgetInput = parseFloat(str(formData, "budgetHours"));
   const budgetHours = budgetInput >= 0 ? budgetInput : DEFAULT_BUDGET_HOURS;
 
-  const newProjectId = nextId("p");
-  db.projects.push({
-    id: newProjectId,
-    name: projectName,
-    description: str(formData, "description"),
-    status: projectStatus,
-    color: projectColor,
-    budgetHours,
-    createdAt: new Date().toISOString(),
-  });
+  const result = await run(
+    `INSERT INTO projects (name, description, status, color, budgetHours, createdAt)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [
+      projectName,
+      str(formData, "description"),
+      projectStatus,
+      projectColor,
+      budgetHours,
+      new Date().toISOString(),
+    ],
+  );
 
   refreshLists();
-  redirect(`/projects/${newProjectId}`);
+  redirect(`/projects/${result.lastInsertRowid}`);
 }
 
 export async function setProjectStatus(id: string, status: ProjectStatus) {
   if (!PROJECT_STATUSES.includes(status)) return;
-  const targetProject = db.projects.find((p) => p.id === id);
-  if (!targetProject) return;
-  targetProject.status = status;
+  const result = await run("UPDATE projects SET status = ? WHERE id = ?", [status, id]);
+  if (result.rowsAffected === 0) return;
   refreshLists();
   revalidatePath(`/projects/${id}`);
 }
 
 export async function deleteProject(id: string) {
-  //* Remove the project and all its tasks in one pass each.
-  db.projects = db.projects.filter((p) => p.id !== id);
-  db.tasks = db.tasks.filter((t) => t.projectId !== id);
+  //* Tasks/comments/time logs cascade via the schema's ON DELETE CASCADE.
+  await run("DELETE FROM projects WHERE id = ?", [id]);
   refreshLists();
   redirect("/projects");
 }
@@ -102,9 +117,8 @@ export async function createTask(
   formData: FormData,
 ): Promise<FormState> {
   const projectId = str(formData, "projectId");
-  if (!projectId || !db.projects.some((p) => p.id === projectId)) {
-    return { error: "Unknown project." };
-  }
+  const project = await one("SELECT 1 FROM projects WHERE id = ?", [projectId]);
+  if (!projectId || !project) return { error: "Unknown project." };
 
   const taskTitle = str(formData, "title", 200);
   if (!taskTitle) return { error: "Task title is required." };
@@ -117,19 +131,21 @@ export async function createTask(
   const estimateInput = parseFloat(str(formData, "estimateHours"));
   const estimateHours = estimateInput > 0 ? estimateInput : HOURS_BY_PRIORITY[taskPriority];
 
-  const newTask: Task = {
-    id: nextId("t"),
-    projectId,
-    title: taskTitle,
-    description: str(formData, "description"),
-    status: TASK_STATUSES.includes(statusInput) ? statusInput : "todo",
-    priority: taskPriority,
-    estimateHours,
-    assignee: str(formData, "assignee", 80) || "Unassigned",
-    dueDate: dueDateInput || null,
-    createdAt: new Date().toISOString(),
-  };
-  db.tasks.push(newTask);
+  await run(
+    `INSERT INTO tasks (projectId, title, description, status, priority, assignee, estimateHours, dueDate, createdAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      projectId,
+      taskTitle,
+      str(formData, "description"),
+      TASK_STATUSES.includes(statusInput) ? statusInput : "todo",
+      taskPriority,
+      str(formData, "assignee", 80) || "Unassigned",
+      estimateHours,
+      dueDateInput || null,
+      new Date().toISOString(),
+    ],
+  );
 
   refreshLists();
   revalidatePath(`/projects/${projectId}`);
@@ -138,20 +154,19 @@ export async function createTask(
 
 export async function setTaskStatus(id: string, status: TaskStatus) {
   if (!TASK_STATUSES.includes(status)) return;
-  const targetTask = db.tasks.find((t) => t.id === id);
-  if (!targetTask) return;
-  targetTask.status = status;
+  const projectId = await projectIdOfTask(id);
+  if (!projectId) return;
+  await run("UPDATE tasks SET status = ? WHERE id = ?", [status, id]);
   refreshLists();
-  revalidatePath(`/projects/${targetTask.projectId}`);
+  revalidatePath(`/projects/${projectId}`);
 }
 
 export async function deleteTask(id: string) {
-  const targetTask = db.tasks.find((t) => t.id === id);
-  if (!targetTask) return;
-  const owningProjectId = targetTask.projectId;
-  db.tasks = db.tasks.filter((t) => t.id !== id);
+  const projectId = await projectIdOfTask(id);
+  if (!projectId) return;
+  await run("DELETE FROM tasks WHERE id = ?", [id]);
   refreshLists();
-  revalidatePath(`/projects/${owningProjectId}`);
+  revalidatePath(`/projects/${projectId}`);
 }
 
 export async function updateTask(
@@ -159,7 +174,10 @@ export async function updateTask(
   formData: FormData,
 ): Promise<FormState> {
   const id = str(formData, "id");
-  const task = db.tasks.find((t) => t.id === id);
+  const task = await one<{ projectId: string; status: TaskStatus; priority: Priority }>(
+    "SELECT CAST(projectId AS TEXT) AS projectId, status, priority FROM tasks WHERE id = ?",
+    [id],
+  );
   if (!task) return { error: "Task not found." };
 
   const title = str(formData, "title", 200);
@@ -169,13 +187,26 @@ export async function updateTask(
   const statusInput   = str(formData, "status") as TaskStatus;
   const estimateInput = parseFloat(str(formData, "estimateHours"));
 
-  task.title       = title;
-  task.description = str(formData, "description");
-  task.status      = TASK_STATUSES.includes(statusInput) ? statusInput : task.status;
-  task.priority    = PRIORITIES.includes(priorityInput) ? priorityInput : task.priority;
-  task.assignee    = str(formData, "assignee", 80) || "Unassigned";
-  task.dueDate     = str(formData, "dueDate") || null;
-  task.estimateHours = estimateInput > 0 ? estimateInput : HOURS_BY_PRIORITY[task.priority];
+  const priority = PRIORITIES.includes(priorityInput) ? priorityInput : task.priority;
+  const status   = TASK_STATUSES.includes(statusInput) ? statusInput : task.status;
+  const estimateHours = estimateInput > 0 ? estimateInput : HOURS_BY_PRIORITY[priority];
+
+  await run(
+    `UPDATE tasks
+        SET title = ?, description = ?, status = ?, priority = ?,
+            assignee = ?, dueDate = ?, estimateHours = ?
+      WHERE id = ?`,
+    [
+      title,
+      str(formData, "description"),
+      status,
+      priority,
+      str(formData, "assignee", 80) || "Unassigned",
+      str(formData, "dueDate") || null,
+      estimateHours,
+      id,
+    ],
+  );
 
   refreshLists();
   revalidatePath(`/projects/${task.projectId}`);
@@ -184,9 +215,8 @@ export async function updateTask(
 }
 
 export async function deleteTaskAndRedirect(id: string, projectId: string) {
-  db.tasks    = db.tasks.filter((t) => t.id !== id);
-  db.comments = db.comments.filter((c) => c.taskId !== id);
-  db.timeLogs = db.timeLogs.filter((tl) => tl.taskId !== id);
+  //* Comments and time logs cascade via ON DELETE CASCADE.
+  await run("DELETE FROM tasks WHERE id = ?", [id]);
   refreshLists();
   redirect(`/projects/${projectId}`);
 }
@@ -200,28 +230,23 @@ export async function addComment(
   formData: FormData,
 ): Promise<FormState> {
   const taskId = str(formData, "taskId");
-  const task = db.tasks.find((t) => t.id === taskId);
-  if (!task) return { error: "Task not found." };
+  const projectId = await projectIdOfTask(taskId);
+  if (!projectId) return { error: "Task not found." };
 
   const body = str(formData, "body", 2000);
   if (!body) return { error: "Update cannot be empty." };
 
-  const author = str(formData, "author", 80) || "Unknown";
+  await run(
+    "INSERT INTO comments (taskId, author, body, createdAt) VALUES (?, ?, ?, ?)",
+    [taskId, str(formData, "author", 80) || "Unknown", body, new Date().toISOString()],
+  );
 
-  db.comments.push({
-    id: nextId("c"),
-    taskId,
-    author,
-    body,
-    createdAt: new Date().toISOString(),
-  });
-
-  revalidatePath(`/projects/${task.projectId}/tasks/${taskId}`);
+  revalidatePath(`/projects/${projectId}/tasks/${taskId}`);
   return { ok: true };
 }
 
 export async function deleteComment(id: string, taskId: string, projectId: string) {
-  db.comments = db.comments.filter((c) => c.id !== id);
+  await run("DELETE FROM comments WHERE id = ?", [id]);
   revalidatePath(`/projects/${projectId}/tasks/${taskId}`);
 }
 
@@ -234,32 +259,32 @@ export async function logTime(
   formData: FormData,
 ): Promise<FormState> {
   const taskId = str(formData, "taskId");
-  const task = db.tasks.find((t) => t.id === taskId);
-  if (!task) return { error: "Task not found." };
+  const projectId = await projectIdOfTask(taskId);
+  if (!projectId) return { error: "Task not found." };
 
   const hoursInput = parseFloat(str(formData, "hours"));
   if (!hoursInput || hoursInput <= 0) return { error: "Hours must be greater than 0." };
   if (hoursInput > 24) return { error: "Cannot log more than 24 hours in a single entry." };
 
-  const author = str(formData, "author", 80) || "Unknown";
-  const date   = str(formData, "date") || new Date().toISOString().slice(0, 10);
-  const note   = str(formData, "note", 300);
+  const date = str(formData, "date") || new Date().toISOString().slice(0, 10);
 
-  db.timeLogs.push({
-    id: nextId("tl"),
-    taskId,
-    author,
-    hours: Math.round(hoursInput * 4) / 4, // round to nearest 0.25
-    date,
-    note,
-    createdAt: new Date().toISOString(),
-  });
+  await run(
+    "INSERT INTO timeLogs (taskId, author, hours, date, note, createdAt) VALUES (?, ?, ?, ?, ?, ?)",
+    [
+      taskId,
+      str(formData, "author", 80) || "Unknown",
+      Math.round(hoursInput * 4) / 4, // round to nearest 0.25
+      date,
+      str(formData, "note", 300),
+      new Date().toISOString(),
+    ],
+  );
 
-  revalidatePath(`/projects/${task.projectId}/tasks/${taskId}`);
+  revalidatePath(`/projects/${projectId}/tasks/${taskId}`);
   return { ok: true };
 }
 
 export async function deleteTimeLog(id: string, taskId: string, projectId: string) {
-  db.timeLogs = db.timeLogs.filter((tl) => tl.id !== id);
+  await run("DELETE FROM timeLogs WHERE id = ?", [id]);
   revalidatePath(`/projects/${projectId}/tasks/${taskId}`);
 }
