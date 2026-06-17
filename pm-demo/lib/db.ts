@@ -44,10 +44,16 @@ function init(): Promise<void> {
 }
 
 //* Rows whose first job is to satisfy a typed interface — fetch many / one.
+//* libsql Rows are array-like class instances; rebuild them as plain objects
+//* so they can cross the Server→Client Component boundary.
 export async function all<T>(sql: string, args: InArgs = []): Promise<T[]> {
-  await init();  
+  await init();
   const result = await db.execute({ sql, args });
-  return result.rows as unknown as T[];
+  return result.rows.map((row) => {
+    const plain: Record<string, unknown> = {};
+    for (const col of result.columns) plain[col] = row[col];
+    return plain as T;
+  });
 }
 
 export async function one<T>(sql: string, args: InArgs = []): Promise<T | undefined> {
